@@ -28,6 +28,7 @@ $nugetChocolateyInstallIfMissingAlias = Join-Path $nugetExePath 'cinstm.bat'
 $nugetChocolateyUpdateAlias = Join-Path $nugetExePath 'cup.bat'
 $nugetChocolateyListAlias = Join-Path $nugetExePath 'clist.bat'
 $nugetChocolateyVersionAlias = Join-Path $nugetExePath 'cver.bat'
+$nugetChocolateyVersionAlias = Join-Path $nugetExePath 'nuget.bat'
 
 Write-Host "Creating `'$nugetChocolateyBinFile`' so you can call 'chocolatey' from anywhere."
 "@echo off
