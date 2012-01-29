@@ -2,7 +2,7 @@ param($command,$packageName='',$source='https://go.microsoft.com/fwlink/?LinkID=
 # chocolatey
 # Copyright (c) 2011-Present Rob Reynolds
 # Crediting contributions by Chris Ortman, Nekresh, Staxmanade, Chrissie1, AnthonyMastrean
-# Big thanks to Keith Dahlby for all the powershell help! 
+# Big thanks to Keith Dahlby for all the powershell help!
 # Apache License, Version 2.0 - http://www.apache.org/licenses/LICENSE-2.0
 
 ## Set the culture to invariant
@@ -25,7 +25,7 @@ $h2 = '-------------------------'
 
 function Run-ChocolateyProcess {
 param([string]$file, [string]$arguments = $args, [switch] $elevated);
-	
+
 	Write-Host "Running $file $arguments. This may take awhile and permissions may need to be elevated, depending on the package.";
   $psi = new-object System.Diagnostics.ProcessStartInfo $file;
   $psi.Arguments = $arguments;
@@ -35,7 +35,7 @@ param([string]$file, [string]$arguments = $args, [switch] $elevated);
 	#	$psi.RedirectStandardError = $true;
 	#	$psi.UseShellExecute = $false;
   $psi.WorkingDirectory = get-location;
- 
+
   $s = [System.Diagnostics.Process]::Start($psi);
   $s.WaitForExit();
   if ($s.ExitCode -ne 0) {
@@ -44,20 +44,20 @@ param([string]$file, [string]$arguments = $args, [switch] $elevated);
 }
 
 function Chocolatey-Install {
-    
+
   param(
-    [string] $packageName, 
-    $source = 'https://go.microsoft.com/fwlink/?LinkID=206669', 
+    [string] $packageName,
+    $source = 'https://go.microsoft.com/fwlink/?LinkID=206669',
     [string] $version = '',
     [string] $installerArguments = ''
   )
-  
+
   if($($packageName).EndsWith('.config')) {
     Chocolatey-PackagesConfig $packageName
     return
   }
-  
-  switch -wildcard ($source) 
+
+  switch -wildcard ($source)
   {
     "webpi" { Chocolatey-WebPI $packageName $installerArguments; }
     "ruby" { Chocolatey-RubyGem $packageName $version $installerArguments; }
@@ -76,21 +76,21 @@ function Chocolatey-PackagesConfig {
     if (-not($($packagesConfigPath).Contains('\'))) {
       Chocolatey-NuGet $packagesConfigPath
     }
-    
+
     return
   }
-  
+
   $h1
   "Installing packages from manifest: '$(Resolve-Path $packagesConfigPath)'"
   $h1
-  
+
   $xml = [xml] (Get-Content $packagesConfigPath)
   $xml.packages.package | ?{ $_.id -ne '' -and $_.id -ne $null} | %{
     Chocolatey-Install -packageName $_.id -source $_.source -version $_.version
   }
 }
 
-function Chocolatey-NuGet { 
+function Chocolatey-NuGet {
 param([string] $packageName, $source = 'https://go.microsoft.com/fwlink/?LinkID=206669')
 
   $srcArgs = "$source"
@@ -109,41 +109,41 @@ $h2
 "@ | Write-Host
 
 	$nugetOutput = Run-NuGet $packageName $source $version
-	
+
 	foreach ($line in $nugetOutput) {
 		if ($line -notlike "*not installed*" -and $line -notlike "Dependency*already installed." -and $line -notlike "Attempting to resolve dependency*") {
 			$installedPackageName = ''
 			$installedPackageVersion = ''
-		
+
 			$regex = [regex]"'[.\S]+\s?"
-	    $pkgNameMatches = $regex.Matches($line) | select -First 1 
+	    $pkgNameMatches = $regex.Matches($line) | select -First 1
 			if ($pkgNameMatches -ne $null) {
 				$installedPackageName = $pkgNameMatches -replace "'", "" -replace " ", ""
 			}
-			
+
 			$regex = [regex]"[0-9.]+[[)]?'"
-			$pkgVersionMatches = $regex.Matches($line) | select -First 1 
+			$pkgVersionMatches = $regex.Matches($line) | select -First 1
 			if ($pkgVersionMatches -ne $null) {
 				$installedPackageVersion = $pkgVersionMatches -replace '\)', '' -replace "'", "" -replace " ", ""
 			}
-      
+
       if ($installedPackageName -eq '') {
         $regex = [regex]"`"[.\S]+\s?"
         $pkgNameMatches = $regex.Matches($line) | select -First 1
         $installedPackageName = $pkgNameMatches -replace "`"", "" -replace " ", ""
         $installedPackageVersion = $version
       }
-			      
+
       if ($installedPackageName -ne '') {
         $packageFolder = ''
         if ($installedPackageVersion -ne '') {
-          $packageFolder = Join-Path $nugetLibPath "$($installedPackageName).$($installedPackageVersion)" 
+          $packageFolder = Join-Path $nugetLibPath "$($installedPackageName).$($installedPackageVersion)"
         } else {
-          #search the lib directory for the highest number of the folder        
-          $packageFolder = Get-ChildItem $nugetLibPath | ?{$_.name -match "^$installedPackageName*"} | sort name -Descending | select -First 1 
+          #search the lib directory for the highest number of the folder
+          $packageFolder = Get-ChildItem $nugetLibPath | ?{$_.name -match "^$installedPackageName*"} | sort name -Descending | select -First 1
           $packageFolder = $packageFolder.FullName
         }
-				
+
         if ($packageFolder -ne '') {
 @"
 $h2
@@ -161,7 +161,7 @@ $h2
       }
     }
   }
-  
+
 @"
 $h1
 Chocolatey has finished installing `'$packageName`' - check log for errors.
@@ -199,7 +199,7 @@ $h2
   $logFile = Join-Path $nugetChocolateyPath 'install.log'
 	$errorLogFile = Join-Path $nugetChocolateyPath 'error.log'
   Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile -RedirectStandardError $errorLogFile
-	
+
   $nugetOutput = Get-Content $logFile -Encoding Ascii
 	foreach ($line in $nugetOutput) {
     Write-Host $line
@@ -209,13 +209,13 @@ $h2
 		Write-Host $errors -BackgroundColor Red -ForegroundColor White
 		#throw $errors
 	}
-	
+
 	return $nugetOutput
 }
 
 function Run-ChocolateyPS1 {
 param([string] $packageFolder, [string] $packageName)
-  if ($packageFolder -notlike '') { 
+  if ($packageFolder -notlike '') {
 @"
 $h2
 Chocolatey Installation (chocolateyinstall.ps1)
@@ -226,24 +226,24 @@ $h2
 "@ | Write-Host
 
     $ps1 = Get-ChildItem  $packageFolder -recurse | ?{$_.name -match "chocolateyinstall.ps1"} | sort name -Descending | select -First 1
-    
+
     if ($ps1 -notlike '') {
       $env:chocolateyInstallArguments = "$installArguments"
       $env:chocolateyInstallOverride = $null
       if ($overrideArgs -eq $true) {
         $env:chocolateyInstallOverride = $true
-      } 
-      
+      }
+
       $ps1FullPath = $ps1.FullName
       & "$ps1FullPath"
       $env:chocolateyInstallArguments = ''
       $env:chocolateyInstallOverride = $null
-      
+
       # $importChocolateyHelpers = "";
       # Get-ChildItem "$nugetChocolateyPath\helpers" -Filter *.psm1 | ForEach-Object { $importChocolateyHelpers = "& import-module -name  `'$($_.FullName)`';$importChocolateyHelpers" };
       # Run-ChocolateyProcess powershell "-NoProfile -ExecutionPolicy unrestricted -Command `"$importChocolateyHelpers & `'$ps1FullPath`'`"" -elevated
       ##testing Start-Process -FilePath "powershell.exe" -ArgumentList " -noexit `"$ps1FullPath`"" -Verb "runas"  -Wait  #-PassThru -UseNewEnvironment ##-RedirectStandardError $errorLog -WindowStyle Normal
-      
+
       #detect errors
       $chocTempDir = Join-Path $env:TEMP "chocolatey"
       $tempDir = Join-Path $chocTempDir "$packageName"
@@ -264,7 +264,7 @@ $h2
 
 function Get-ChocolateyBins {
 param([string] $packageFolder)
-  if ($packageFolder -notlike '') { 
+  if ($packageFolder -notlike '') {
 @"
 $h2
 Executable Batch Links
@@ -276,7 +276,7 @@ $h2
     try {
       $files = get-childitem $packageFolder -include *.exe -recurse
       foreach ($file in $files) {
-        Generate-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName
+        Generate-BinFile $file.Name $file.FullName
       }
     }
     catch {
@@ -287,24 +287,21 @@ $h2
 }
 
 function Generate-BinFile {
-param([string] $name, [string] $path)
-  $packageBatchFileName = Join-Path $nugetExePath "$name.bat"
-  $path = $path.ToLower().Replace($nugetPath.ToLower(), "%DIR%..\").Replace("\\","\")
-  Write-Host "Adding $packageBatchFileName and pointing to $path"
-"@echo off
-SET DIR=%~dp0%
-""$path"" %*" | Out-File $packageBatchFileName -encoding ASCII 
+param([string] $name, [string] $fullName)
+  $symLinkName = Join-Path $nugetExePath $name
+  Write-Host "Adding symbolic link $symLinkName and pointing to $fullName"
+  & $env:comspec /c mklink /H $symLinkName $fullName
 }
 
 function Chocolatey-Update {
 param([string] $packageName ='', $source = 'https://go.microsoft.com/fwlink/?LinkID=206669')
 
   if ($packageName -eq '') {$packageName = 'chocolatey';}
-  
+
   $packages = $packageName
   if ($packageName -eq 'all') {
 		$packageFolders = Get-ChildItem $nugetLibPath | sort name
-		$packages = $packageFolders -replace "(\.\d{1,})+"|gu 
+		$packages = $packageFolders -replace "(\.\d{1,})+"|gu
 	}
 
 	foreach ($package in $packages) {
@@ -347,7 +344,7 @@ v0.9.8
   - NuGet updated to v1.4
   - New chocolatey command! InstallMissing allows you to install a package only if it is not already installed. Shortcut is 'cinstm'.
   - Much of the error handling is improved. There are two new Helpers to call (ChocolateySuccess and Write-ChocolateyFailure).
-  - New Helper! Install-ChocolateyPath - give it a path for out of band items that are not imported to path with chocolatey 
+  - New Helper! Install-ChocolateyPath - give it a path for out of band items that are not imported to path with chocolatey
   - New Helper! Start-ChocolateyProcessAsAdmin - this allows you to run processes as administrator
   - New Helper! Install-ChocolateyDesktopLink - put shortcuts on the desktop
  * .4
@@ -355,12 +352,12 @@ v0.9.8
  * .5
   - Improving Start-ChocolateyProcessAsAdmin to allow for running entire functions as administrator by importing helpers to that command if powershell.
  * .6
-  - Fixed a bug introduced in Start-ChocolateyProcessAsAdmin as a result of trying to log error messages. 
+  - Fixed a bug introduced in Start-ChocolateyProcessAsAdmin as a result of trying to log error messages.
  * .7
   - Support for NuGet 1.5 packages.
-  - Proxy support. Thanks Christiaan Baes! 
+  - Proxy support. Thanks Christiaan Baes!
  * .8
-  - Fixed issue with selector in determining a package to update. 
+  - Fixed issue with selector in determining a package to update.
   - Fixed issue with version comparison.
  * .9
   - Fixed issue with new version of NuGet no longer giving version information with an already installed package.
@@ -391,8 +388,8 @@ If you do not accept the license of a package you are installing, please uninsta
 $h2
 Waiver of Responsibility
 $h2
-The use of chocolatey means that an individual using chocolatey assumes the responsibility for any changes (including any damages of any sort) that occur to the system as a result of using chocolatey. 
-This does not supercede the verbage or enforcement of the license for chocolatey (currently Apache 2.0), it is only noted here that you are waiving any rights to collect damages by your use of chocolatey. 
+The use of chocolatey means that an individual using chocolatey assumes the responsibility for any changes (including any damages of any sort) that occur to the system as a result of using chocolatey.
+This does not supercede the verbage or enforcement of the license for chocolatey (currently Apache 2.0), it is only noted here that you are waiving any rights to collect damages by your use of chocolatey.
 It is recommended you read the license (http://www.apache.org/licenses/LICENSE-2.0) to gain a full understanding (especially section 8. Limitation of Liability) prior to using chocolatey.
 $h2
 }
@@ -424,17 +421,17 @@ $h1
 
 function Chocolatey-List {
   param([string]$selector='', [string]$source='https://go.microsoft.com/fwlink/?LinkID=206669',[switch] $allVersions = $false );
-  
+
   if ($source -like 'webpi') {
     $webpiArgs ="/c webpicmd /List /ListOption:All"
-    & cmd.exe $webpiArgs 
-  } else {  
-  
+    & cmd.exe $webpiArgs
+  } else {
+
     $srcArgs = "/source $source"
     if ($source -like 'https://go.microsoft.com/fwlink/?LinkID=206669') {
       $srcArgs = "/source http://chocolatey.org/api/feeds/ /source $source"
     }
- 
+
     $parameters = "list $srcArgs"
     if ($allVersions -eq $true) {
       $parameters = "$parameters -all"
@@ -443,54 +440,54 @@ function Chocolatey-List {
       $parameters = "$parameters ""$selector"""
     }
 
-    Start-Process $nugetExe -ArgumentList $parameters -NoNewWindow -Wait 
+    Start-Process $nugetExe -ArgumentList $parameters -NoNewWindow -Wait
   }
-} 
+}
 
 function Chocolatey-Version {
 param([string]$packageName='',[string]$source='https://go.microsoft.com/fwlink/?LinkID=206669')
   if ($packageName -eq '') {$packageName = 'chocolatey';}
-  
+
   $packages = $packageName
   if ($packageName -eq 'all') {
     $packageFolders = Get-ChildItem $nugetLibPath | sort name
-    $packages = $packageFolders -replace "(\.\d{1,})+"|gu 
+    $packages = $packageFolders -replace "(\.\d{1,})+"|gu
   }
-  
+
   $srcArgs = "/source $source"
   if ($source -like 'https://go.microsoft.com/fwlink/?LinkID=206669') {
     $srcArgs = "/source http://chocolatey.org/api/feeds/ /source $source"
   }
-  
+
   foreach ($package in $packages) {
     $logFile = Join-Path $nugetChocolateyPath 'list.log'
     Start-Process $nugetExe -ArgumentList "list ""$package"" $srcArgs" -NoNewWindow -Wait -RedirectStandardOutput $logFile
     Start-Sleep 1 #let it finish writing to the config file
 
-    $versionLatest = Get-Content $logFile | ?{$_ -match "^$package\s+\d+"} | sort $_ -Descending | select -First 1 
+    $versionLatest = Get-Content $logFile | ?{$_ -match "^$package\s+\d+"} | sort $_ -Descending | select -First 1
     $versionLatest = $versionLatest -replace "$package ", "";
-    $versionLatestCompare = $versionLatest.Split('.') | %{('0' * (5 - $_.Length)) + $_} 
+    $versionLatestCompare = $versionLatest.Split('.') | %{('0' * (5 - $_.Length)) + $_}
     $versionLatestCompare = [System.String]::Join('.',$versionLatestCompare)
 
     $versionFound = $chocVer
     if ($packageName -ne 'chocolatey') {
       $versionFound = 'no version'
-      $packageFolder = Get-ChildItem $nugetLibPath | ?{$_.name -match "^$package\.\d+"} | sort name -Descending | select -First 1 
+      $packageFolder = Get-ChildItem $nugetLibPath | ?{$_.name -match "^$package\.\d+"} | sort name -Descending | select -First 1
 
-      if ($packageFolder -notlike '') { 
+      if ($packageFolder -notlike '') {
         #Write-Host $packageFolder
         $versionFound = $packageFolder.Name -replace "$package\."
       }
     }
-    
+
     $versionFoundCompare = ''
     if ($versionFound -ne 'no version') {
-      $versionFoundCompare = $versionFound.Split('.') | %{('0' * (5 - $_.Length)) + $_} 
+      $versionFoundCompare = $versionFound.Split('.') | %{('0' * (5 - $_.Length)) + $_}
       $versionFoundCompare = [System.String]::Join('.',$versionFoundCompare)
-    }    
-  
+    }
+
     $verMessage = "The most recent version of $package available from ($source) is $versionLatest. On your machine you have $versionFound installed."
-    if ($versionLatest -eq $versionFound) { 
+    if ($versionLatest -eq $versionFound) {
       $verMessage = "You have the latest version of $package ($versionLatest) based on ($source)."
     }
     if ($versionLatestCompare -lt $versionFoundCompare) {
@@ -501,16 +498,16 @@ param([string]$packageName='',[string]$source='https://go.microsoft.com/fwlink/?
     }
     Write-Host $verMessage
   }
-  
+
 	$versions = @{latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; }
 	return $versions
 }
 
 function Chocolatey-InstallIfMissing {
 param([string] $packageName, $source = 'https://go.microsoft.com/fwlink/?LinkID=206669',$version = '')
-  
+
   $versions = Chocolatey-Version $packageName $source
-  
+
   if ($versions.'found' -contains 'no version' -or ($version -ne '' -and $versions.'found' -ne $version)) {
     Chocolatey-NuGet $packageName $source $version
   }
@@ -519,7 +516,7 @@ param([string] $packageName, $source = 'https://go.microsoft.com/fwlink/?LinkID=
 function Chocolatey-WebPI {
 param([string] $packageName, [string] $installerArguments ='')
   Chocolatey-InstallIfMissing 'webpicommandline'
-  
+
 @"
 $h1
 Chocolatey ($chocVer) is installing `'$packageName`' (using WebPI)
@@ -529,10 +526,10 @@ $h2
 Please run chocolatey /? for full license acceptance verbage. By installing you accept the license for the package you are installing...
 $h2
 "@ | Write-Host
-  
+
   $chocoInstallLog = Join-Path $nugetChocolateyPath 'chocolateyWebPiInstall.log';
   Remove-LastInstallLog $chocoInstallLog
- 
+
   $webpiArgs = "/c webpicmd /Install /AcceptEula /SuppressReboot /Products:$packageName"
   if ($installerArguments -ne '') {
     $webpiArgs = "$webpiArgs $installerArguments"
@@ -540,19 +537,19 @@ $h2
   if ($overrideArgs -eq $true) {
     $webpiArgs = "/c webpicmd $installerArguments /Products:$packageName"
     write-host "Overriding arguments for WebPI"
-  }  
-  
+  }
+
   Write-Host "Opening minimized PowerShell window and calling `'cmd.exe $webpiArgs`'. If progress is taking a long time, please check that window. It also may not be 100% silent..."
-  
+
   #Start-Process -FilePath "cmd" -ArgumentList "$webpiArgs" -Verb "runas"  -Wait >$chocoInstallLog #-PassThru -UseNewEnvironment >
   #Start-Process -FilePath "$($env:windir)\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy unrestricted -Command `"cmd.exe $webpiArgs | Out-String`"" -Verb "runas"  -Wait | Write-Host  #-PassThru -UseNewEnvironment
   Start-Process -FilePath "$($env:windir)\System32\WindowsPowerShell\v1.0\powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy unrestricted -Command `"cmd.exe $webpiArgs | Tee-Object -FilePath $chocoInstallLog`"" -Verb "RunAs"  -Wait -WindowStyle Minimized
-  
+
   $webpiOutput = Get-Content $chocoInstallLog -Encoding Ascii
 	foreach ($line in $webpiOutput) {
     Write-Host $line
   }
-  
+
 @"
 $h1
 Chocolatey has finished installing `'$packageName`' - check log for errors.
@@ -563,7 +560,7 @@ $h1
 function Chocolatey-RubyGem {
 param([string] $packageName, $version ='', [string] $installerArguments ='')
   Chocolatey-InstallIfMissing 'ruby'
-  
+
 @"
 $h1
 Chocolatey ($chocVer) is installing Ruby Gem `'$packageName`' (using RubyGems.org)
@@ -573,17 +570,17 @@ $h2
 Please run chocolatey /? for full license acceptance verbage. By installing you accept the license for the package you are installing...
 $h2
 "@ | Write-Host
-  
+
   if ($($env:Path).ToLower().Contains("ruby") -eq $false) {
     $env:Path = [Environment]::GetEnvironmentVariable('Path',[System.EnvironmentVariableTarget]::Machine);
   }
-  
+
   $packageArgs = "/c gem install $packageName"
   if ($version -notlike '') {
     $packageArgs = $packageArgs + " -v $version";
   }
   & cmd.exe $packageArgs
-  
+
   if ($installerArguments -ne '') {
     $packageArgs = $packageArgs + " -v $version $installerArguments";
   }
@@ -613,9 +610,9 @@ param([string] $packageName)
   $packageArgs = "pack $packageName -NoPackageAnalysis"
   $logFile = Join-Path $nugetChocolateyPath 'pack.log'
   $errorLogFile = Join-Path $nugetChocolateyPath 'error.log'
-  
+
   Write-Host "Calling `'$nugetExe $packageArgs`'."
-  
+
   Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile -RedirectStandardError $errorLogFile
 
   $nugetOutput = Get-Content $logFile -Encoding Ascii
@@ -640,9 +637,9 @@ param([string] $packageName, $source = 'http://chocolatey.org/' )
   $packageArgs = "push $packageName $srcArgs"
   $logFile = Join-Path $nugetChocolateyPath 'push.log'
   $errorLogFile = Join-Path $nugetChocolateyPath 'error.log'
-  
+
   Write-Host "Calling `'$nugetExe $packageArgs`'. This may take a few minutes. Please wait for the command to finish."
-  
+
   Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile -RedirectStandardError $errorLogFile
 
   $nugetOutput = Get-Content $logFile -Encoding Ascii
@@ -660,7 +657,7 @@ param([string] $packageName, $source = 'http://chocolatey.org/' )
 #main entry point
 Remove-LastInstallLog
 
-switch -wildcard ($command) 
+switch -wildcard ($command)
 {
   "install" { Chocolatey-Install $packageName $source $version $installArguments; }
   "installmissing" { Chocolatey-InstallIfMissing $packageName $source $version; }
