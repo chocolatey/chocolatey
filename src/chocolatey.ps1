@@ -287,10 +287,20 @@ $h2
 }
 
 function Generate-BinFile {
-param([string] $name, [string] $fullName)
+param([string] $name, [string] $path)
+if( (gwmi win32_operatingSystem).version -ge 6){
   $symLinkName = Join-Path $nugetExePath $name
-  Write-Host "Adding symbolic link $symLinkName and pointing to $fullName"
-  & $env:comspec /c mklink /H $symLinkName $fullName
+  Write-Host "Adding symbolic link $symLinkName and pointing to $path"
+  & $env:comspec /c mklink /H $symLinkName $path}
+else{
+  $name = $name.Name.Replace(".exe","").Replace(".EXE","")
+  $packageBatchFileName = Join-Path $nugetExePath "$name.bat"
+  $path = $path.ToLower().Replace($nugetPath.ToLower(), "%DIR%..\").Replace("\\","\")
+  Write-Host "Adding $packageBatchFileName and pointing to $path"
+"@echo off
+SET DIR=%~dp0%
+""$path"" %*" | Out-File $packageBatchFileName -encoding ASCII
+    }
 }
 
 function Chocolatey-Update {
