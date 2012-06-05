@@ -160,7 +160,8 @@ Creating Chocolatey NuGet folders if they do not already exist.
   Create-ChocolateyBinFiles $nugetChocolateyPath.ToLower().Replace($chocolateyPath.ToLower(), "%$($chocInstallVariableName)%\").Replace("\\","\") $chocolateyExePath
   Initialize-ChocolateyPath $chocolateyExePath $chocolateyExePathVariable
   Process-ChocolateyBinFiles $chocolateyExePath $chocolateyExePathVariable
-  
+  AddConfigEntry $nugetChocolateyPath
+    
 @"
 Chocolatey is now ready.
 You can call chocolatey from anywhere, command line or powershell by typing chocolatey.
@@ -277,6 +278,15 @@ param(
     
     Set-Content $processedMarkerFile -Value "$([System.DateTime]::Now.Date)" -Encoding Ascii
   }
+}
+
+function AddConfigEntry {
+param(
+  [string] $nugetChocolateyPath
+)
+  $packageArgs = "sources add -Name ""Chocolatey.org Gallery"" -Source ""http://chocolatey.org/api/v2/"""
+  Write-Host "Calling NuGet.exe $packageArgs"
+  Start-Process "$nugetChocolateyPath\nuget.exe" -ArgumentList $packageArgs -NoNewWindow -Wait
 }
 
 export-modulemember -function Initialize-Chocolatey;
