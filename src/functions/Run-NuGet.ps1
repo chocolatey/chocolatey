@@ -1,7 +1,7 @@
 ﻿function Run-NuGet {
 param(
   [string] $packageName, 
-  [string] $source = 'https://go.microsoft.com/fwlink/?LinkID=230477',
+  [string] $source = '',
   [string] $version = ''
 )
 @"
@@ -10,14 +10,7 @@ NuGet
 $h2
 "@ | Write-Debug
 
-  $srcArgs = "-Source `"$source`""
-  if ($source -like 'https://go.microsoft.com/fwlink/?LinkID=230477') {
-    $srcArgs = "-Source `"http://chocolatey.org/api/v2/`" -Source `"$source`""
-  }
-
-  if ($source -like '') {
-    $srcArgs = "-Source `"http://chocolatey.org/api/v2/`" -Source `"https://go.microsoft.com/fwlink/?LinkID=230477`""
-  }
+  	$srcArgs = Get-SourceArgument $source
 
   $packageArgs = "install $packageName -Outputdirectory `"$nugetLibPath`" $srcArgs"
   if ($version -notlike '') {

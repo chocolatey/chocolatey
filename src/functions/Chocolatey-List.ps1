@@ -1,7 +1,7 @@
 ﻿function Chocolatey-List {
 param(
   [string] $selector='', 
-  [string] $source='https://go.microsoft.com/fwlink/?LinkID=230477' 
+  [string] $source='' 
 )
   
   if ($source -like 'webpi') {
@@ -9,10 +9,7 @@ param(
     & cmd.exe $webpiArgs 
   } else {  
   
-    $srcArgs = "-Source `"$source`""
-    if ($source -like 'https://go.microsoft.com/fwlink/?LinkID=230477') {
-      $srcArgs = "-Source `"http://chocolatey.org/api/v2/`" -Source `"$source`""
-    }
+  	$srcArgs = Get-SourceArgument $source
     
     $parameters = "list"
     if ($selector -ne '') {
