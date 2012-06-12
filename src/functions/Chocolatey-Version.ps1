@@ -1,7 +1,7 @@
 ﻿function Chocolatey-Version {
 param(
   [string] $packageName='',
-  [string] $source=''
+  [string[]] $source=''
 )
 
   if ($packageName -eq '') {$packageName = 'chocolatey';}

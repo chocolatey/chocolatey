@@ -1,7 +1,7 @@
 ﻿function Run-NuGet {
 param(
   [string] $packageName, 
-  [string] $source = '',
+  [string[]] $source = '',
   [string] $version = ''
 )
 @"

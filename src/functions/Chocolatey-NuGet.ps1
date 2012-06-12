@@ -1,7 +1,7 @@
 ﻿function Chocolatey-NuGet { 
 param(
   [string] $packageName,
-  [string] $source = ''
+  [string[]] $source = ''
 )
 
   if ($packageName -eq 'all') { 

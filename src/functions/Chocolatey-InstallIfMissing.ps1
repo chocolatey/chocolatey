@@ -1,7 +1,7 @@
 ﻿function Chocolatey-InstallIfMissing {
 param(
   [string] $packageName, 
-  [string] $source = '',
+  [string[]] $source = '',
   [string] $version = ''
 )
   

@@ -1,7 +1,7 @@
 ﻿function Chocolatey-List {
 param(
   [string] $selector='', 
-  [string] $source='' 
+  [string[]] $source='' 
 )
   
   if ($source -like 'webpi') {
