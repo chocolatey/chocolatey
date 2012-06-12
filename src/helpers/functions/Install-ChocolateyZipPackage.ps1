@@ -11,7 +11,7 @@ The name of the package we want to download - this is arbitrary, call it whateve
 It's recommended you call it the same as your nuget package id.
 
 .PARAMETER Url
-This is the url to download the file from. 
+This is the url to download the file from.
 
 .PARAMETER Url64bit
 OPTIONAL - If there is an x64 installer to download, please include it here. If not, delete this parameter
@@ -34,7 +34,7 @@ This method has error handling built into it.
   Get-ChocolateyUnzip
 #>
 param(
-  [string] $packageName, 
+  [string] $packageName,
   [string] $url,
   [string] $unzipLocation,
   [string] $url64bit = $url
@@ -42,18 +42,26 @@ param(
 
   try {
     $fileType = 'zip'
-    
+
     $chocTempDir = Join-Path $env:TEMP "chocolatey"
     $tempDir = Join-Path $chocTempDir "$packageName"
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
-    $file = Join-Path $tempDir "$($packageName)Install.$fileType"
-    
+
+    $remoteFilename = [System.IO.Path]::GetFileNameWithoutExtension($url)
+    $file = Join-Path $tempDir "Install-$remoteFilename.$fileType"
+
+    if (![System.IO.File]::Exists($file)) {
+      Get-ChocolateyWebFile $packageName $file $url $url64bit
+    } else {
+      Write-Host "$packageName installer exists in temp directory, download skipped."
+    }
+
     Get-ChocolateyWebFile $packageName $file $url $url64bit
     Get-ChocolateyUnzip "$file" $unzipLocation
-    
+
     Write-ChocolateySuccess $packageName
   } catch {
     Write-ChocolateyFailure $packageName $($_.Exception.Message)
-    throw 
+    throw
   }
 }
