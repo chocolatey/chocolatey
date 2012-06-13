@@ -41,6 +41,7 @@ $nugetChocolateyGemAlias = Join-Path $chocolateyExePath 'cgem.bat'
 $nugetChocolateyPackAlias = Join-Path $chocolateyExePath 'cpack.bat'
 $nugetChocolateyPushAlias = Join-Path $chocolateyExePath 'cpush.bat'
 $nugetChocolateyUninstallAlias = Join-Path $chocolateyExePath 'cuninst.bat'
+$nugetChocolateySourcesAlias = Join-Path $chocolateyExePath 'csources.bat'
 
 
 Write-Host "Creating `'$nugetChocolateyBinFile`' so you can call 'chocolatey' from anywhere."
@@ -107,6 +108,12 @@ Write-Host "Creating `'$nugetChocolateyUninstallAlias`' so you can call 'chocola
 "@echo off
 SET DIR=%~dp0%
 ""$nugetChocolateyPath\chocolatey.cmd"" push %*" | Out-File $nugetChocolateyPushAlias -encoding ASCII
+}
+
+Write-Host "Creating `'$nugetChocolateySourcesAlias`' so you can call 'chocolatey sources' from a shortcut of 'csources'."
+"@echo off
+SET DIR=%~dp0%
+""$nugetChocolateyPath\chocolatey.cmd"" sources %*" | Out-File $nugetChocolateySourcesAlias -encoding ASCII
 }
 
 function Initialize-Chocolatey {
