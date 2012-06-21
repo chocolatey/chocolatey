@@ -12,9 +12,12 @@ This is the full path to your zip file.
 .PARAMETER Destination
 This is a directory where you would like the unzipped files to end up.
 
+.PARAMETER SpecificFolder
+OPTIONAL - This is a specific directory within zip file to extract.
+
 .EXAMPLE
 $scriptPath = (Split-Path -parent $MyInvocation.MyCommand.Definition)
-Get-ChocolateyUnzip "c:\someFile.zip" $scriptPath
+Get-ChocolateyUnzip "c:\someFile.zip" $scriptPath somedirinzip\somedirinzip
 
 .OUTPUTS
 Returns the passed in $destination.
@@ -26,8 +29,14 @@ There is no error handling built into this method.
 #>
 param(
   [string] $fileFullPath, 
-  [string] $destination
+  [string] $destination,
+  [string] $specificFolder
 )
+
+  if ($specificfolder) {
+    $fileFullPath=join-path $fileFullPath $specificFolder
+  }  
+	
   Write-Debug "Running 'Get-ChocolateyUnzip' with fileFullPath:`'$fileFullPath`'',destination:$destination";
   
   Write-Host "Extracting $fileFullPath to $destination..."
