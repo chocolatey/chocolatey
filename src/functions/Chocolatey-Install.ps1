@@ -1,7 +1,7 @@
 ﻿function Chocolatey-Install {
 param(
   [string] $packageName, 
-  [string] $source = '', 
+  [string[]] $source = '', 
   [string] $version = '',
   [string] $installerArguments = ''
 )

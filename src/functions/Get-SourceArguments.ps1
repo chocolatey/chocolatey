@@ -1,10 +1,11 @@
 ﻿function Get-SourceArguments {
 param(
-  [string] $source = ''
+  [string[]] $source = ''
 )
+    
 	$srcArgs = ""
 	if ($source -ne '') {
-		$srcArgs = "-Source `"$source`""
+		$srcArgs = "-Source `"" + ($source -join ";") + "`""
 	}
 	else
 	{

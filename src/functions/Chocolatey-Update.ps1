@@ -1,7 +1,7 @@
 ﻿function Chocolatey-Update {
 param(
   [string] $packageName ='', 
-  [string] $source = ''
+  [string[]] $source = ''
 )
   if ($packageName -eq '') {$packageName = 'chocolatey';}
   Write-Debug "Running 'Chocolatey-Update' for $packageName with source:`'$source`'.";

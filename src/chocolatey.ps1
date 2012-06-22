@@ -1,7 +1,7 @@
 ﻿param(
   [string]$command,
   [string]$packageName='',
-  [string]$source='',
+  [string[]]$source='',
   [string]$version='',
   [alias("all")][switch] $allVersions = $false,
   [alias("ia","installArgs")][string] $installArguments = '',

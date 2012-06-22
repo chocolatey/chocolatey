@@ -1,7 +1,7 @@
 ﻿function Chocolatey-NuGet { 
 param(
   [string] $packageName,
-  [string] $source = ''
+  [string[]] $source = ''
 )
   Write-Debug "Running 'Chocolatey-NuGet' for $packageName with source:`'$source`'";
 

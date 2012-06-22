@@ -1,7 +1,7 @@
 ﻿function Chocolatey-List {
 param(
   [string] $selector='', 
-  [string] $source='' 
+  [string[]] $source='' 
 )
   Write-Debug "Running 'Chocolatey-List' with selector: `'$selector`', source:`'$source`'";
 
