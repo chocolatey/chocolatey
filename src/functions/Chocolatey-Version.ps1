@@ -15,6 +15,7 @@ param(
   }
   
   $srcArgs = Get-SourceArguments $source
+  Write-Debug "based on: `'$srcArgs`' feed"
   
   foreach ($package in $packages) {
     $packageArgs = "list ""$package"" $srcArgs"
@@ -48,20 +49,19 @@ param(
       $versionFoundCompare = Get-LongPackageVersion $versionFound
     }    
   
-    $verMessage = "The most recent version of $package available from `'$srcArgs`' (if value is empty, using sources in nuget.config file) is $versionLatest. On your machine you have $versionFound installed."
+    $verMessage = "A more recent version is available"
     if ($versionLatest -eq $versionFound) { 
-      $verMessage = "You have the latest version of $package ($versionLatest) based on: `'$srcArgs`' (if value is empty, using sources in nuget.config file)."
+      $verMessage = "Latest version installed"
     }
     if ($versionLatestCompare -lt $versionFoundCompare) {
       $verMessage = "$verMessage You must be smarter than the average bear..."
     }
     if ($versionLatest -eq '') {
-      $verMessage = "$package does not appear to be on the source(s) specified: `'$srcArgs`' (if value is empty, using sources in nuget.config file). You have $versionFound installed. Interesting..."
+      $verMessage = "$package does not appear to be on the source(s) specified: "
     }
-    Write-Host $verMessage
-  }
   
-	$versions = @{name=$package; latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; }
+	$versions = @{name=$package; latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; verMessage = $verMessage}
 	$versionsObj = New-Object –typename PSObject -Property $versions
-	return $versionsObj
+	$versionsObj
+}
 }
