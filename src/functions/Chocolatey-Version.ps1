@@ -59,9 +59,11 @@ param(
       $verMessage = "$package does not appear to be on the source(s) specified: `'$srcArgs`' (if value is empty, using sources in nuget.config file). You have $versionFound installed. Interesting..."
     }
     Write-Host $verMessage
-  }
-  
+	
 	$versions = @{name=$package; latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; }
 	$versionsObj = New-Object –typename PSObject -Property $versions
-	return $versionsObj
+	
+	#return version object for each package
+	$versionsObj
+  }
 }
