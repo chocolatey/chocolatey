@@ -36,6 +36,7 @@ param(
   [string] $url,
   [string] $url64bit = $url
 )
+  Write-Debug "Running 'Get-ChocolateyWebFile' for $packageName with url:`'$url`', fileFullPath:`'$fileFullPath`',and url64bit:`'$url64bit`'";
   
   $url32bit = $url;
   $processor = Get-WmiObject Win32_Processor
@@ -49,13 +50,15 @@ param(
   $downloadMessage = "Downloading $packageName ($url) to $fileFullPath"
   if ($url32bit -ne $url64bit) {$downloadMessage = "Downloading $packageName $systemBit ($url) to $fileFullPath.";}
   Write-Host "$downloadMessage"
-  #$downloader = new-object System.Net.WebClient
-  #$downloader.DownloadFile($url, $fileFullPath)
   if ($url.StartsWith('http')) {
     Get-WebFile $url $fileFullPath
+  } else { if ($url.StartsWith('ftp')) {
+    $downloader = new-object System.Net.WebClient
+    $downloader.DownloadFile($url, $fileFullPath)
   } else {
+    Write-Debug "We are attempting to copy the local item `'$url`' to `'$fileFullPath`'"
     Copy-Item $url -Destination $fileFullPath -Force
-  }
+  }  }
   
   Start-Sleep 2 #give it a sec or two to finish up
 }
