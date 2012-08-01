@@ -46,7 +46,7 @@ $chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
 
 write-host 'Ensuring chocolatey commands are on the path'
 $chocInstallVariableName = "ChocolateyInstall"
-$nuGetPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+$nuGetPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName)
 $nugetExePath = 'C:\NuGet\bin'
 if ($nuGetPath -ne $null) {
   $nugetExePath = Join-Path $nuGetPath 'bin'

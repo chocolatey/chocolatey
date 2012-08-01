@@ -5,17 +5,23 @@ $sysDrive = $env:SystemDrive
 $defaultChocolateyPathOld = "$sysDrive\NuGet"
 
 function Set-ChocolateyInstallFolder($folder){
-  #if(test-path $folder){
-    write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
-    [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
-  #}
-  #else{
-  #  throw "Cannot set the chocolatey install folder. Folder not found [$folder]"
-  #}
+  $procVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::Process)
+  $userVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+
+  # Only the set the user variable if it came from proc doesn't match the current user var
+  # This allows a system var to be used, but a user var to override
+  #
+  if ( $procVar -ne $null ) {
+    if ($userVar -ne $folder) {
+        write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
+        [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
+    }
+  }
 }
 
-function Get-ChocolateyInstallFolder(){
-  [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+function Get-ChocolateyInstallFolder {
+  # Use the chocInstallVar from any environment: sys, usr, proc
+  [Environment]::GetEnvironmentVariable($chocInstallVariableName)
 }
 
 function Create-DirectoryIfNotExists($folderName){
@@ -139,9 +145,9 @@ param(
   if($alreadyInitializedNugetPath -and $alreadyInitializedNugetPath -ne $chocolateyPath -and $alreadyInitializedNugetPath -ne $defaultChocolateyPathOld){
     $chocolateyPath = $alreadyInitializedNugetPath
   }
-  else {
-    Set-ChocolateyInstallFolder $chocolateyPath
-  }
+
+  # Always set the path in case its coming from process
+  Set-ChocolateyInstallFolder $chocolateyPath
 
   if(!(test-path $chocolateyPath)){
     mkdir $chocolateyPath | out-null
