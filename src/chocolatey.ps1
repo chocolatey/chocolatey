@@ -9,7 +9,8 @@
   [switch] $overrideArgs = $false,
   [switch] $force = $false,
   [alias("pre")][switch] $prerelease = $false,
-  [switch] $debug
+  [switch] $debug,
+  [string] $name
 ) 
 
 # chocolatey
@@ -80,5 +81,6 @@ switch -wildcard ($command)
   "pack" { Chocolatey-Pack $packageName; }
   "push" { Chocolatey-Push $packageName $source; }
   "help" { Chocolatey-Help; }
+  "sources" { Chocolatey-Sources $packageName $name $source; }
   default { Write-Host 'Please run chocolatey /? or chocolatey help'; }
 }
