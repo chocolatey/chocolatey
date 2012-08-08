@@ -8,14 +8,12 @@ function Set-ChocolateyInstallFolder($folder){
   $procVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::Process)
   $userVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
 
-  # Only the set the user variable if it came from proc doesn't match the current user var
-  # This allows a system var to be used, but a user var to override
-  #
-  if ( $procVar -ne $null ) {
-    if ($userVar -ne $folder) {
-        write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
-        [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
-    }
+  # only set an env var if the value came from a process based env or the default value
+  # the default value can be assumed if both proc and user scoped vars are null
+  # Otherwise it came from a sys or existing user var which means we don't have to set it
+  if ( ($procVar -eq $folder) -or ($procVar -eq $null -and $userVar -eq $null)) {
+    write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
+    [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
   }
 }
 
