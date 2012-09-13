@@ -44,7 +44,7 @@ $h2
   foreach ($line in $nugetOutput) {
     if ($line -ne $null) {Write-Debug $line;}
   }
-  $errors = Get-Content $errorLogFile
+
   if ($errors -ne '') {
     Write-Host $errors -BackgroundColor Red -ForegroundColor White
     #Throw $errors
