@@ -8,6 +8,16 @@ param(
   if ($source -like 'webpi') {
     $webpiArgs ="/c webpicmd /List /ListOption:All"
     & cmd.exe $webpiArgs 
+  } elseif ($source -like 'windowsfeatures') {
+    $chocoInstallLog = Join-Path $nugetChocolateyPath 'chocolateyWindowsFeaturesInstall.log';
+    Remove-LastInstallLog $chocoInstallLog
+    $windowsFeaturesArgs ="/c dism /online /get-features /format:table | Tee-Object -FilePath `'$chocoInstallLog`';"
+    Start-ChocolateyProcessAsAdmin "cmd.exe $windowsFeaturesArgs" -nosleep
+    Create-InstallLogIfNotExists $chocoInstallLog
+    $installOutput = Get-Content $chocoInstallLog -Encoding Ascii
+    foreach ($line in $installOutput) {
+      Write-Host $line
+    }
   } else {  
   
   	$srcArgs = Get-SourceArguments $source
