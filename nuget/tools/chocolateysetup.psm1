@@ -40,7 +40,8 @@ $nugetChocolateyListAlias = Join-Path $chocolateyExePath 'clist.bat'
 $nugetChocolateyVersionAlias = Join-Path $chocolateyExePath 'cver.bat'
 $nugetChocolateyPackAlias = Join-Path $chocolateyExePath 'cpack.bat'
 $nugetChocolateyPushAlias = Join-Path $chocolateyExePath 'cpush.bat'
-
+$nugetChocolateyUninstallAlias = Join-Path $chocolateyExePath 'cuninst.bat'
+$nugetChocolateyProvidesAlias = Join-Path $chocolateyExePath 'cprovides.bat'
 
 Write-Host "Creating `'$nugetChocolateyBinFile`' so you can call 'chocolatey' from anywhere."
 "@echo off
@@ -114,6 +115,7 @@ SET DIR=%~dp0%
 ""`$SYSTEMROOT/System32/cmd.exe"" /c ""`$(basename $0).bat `$*""
 exit `$?" | Out-File $nugetChocolateyPushAlias.Replace(".bat","") -encoding ASCII 
 
+
 Write-Host "Creating `'$nugetChocolateyUninstallAlias`' so you can call 'chocolatey uninstall' from a shortcut of 'cuninst'."
 "@echo off
 SET DIR=%~dp0%
@@ -122,6 +124,16 @@ SET DIR=%~dp0%
 "#!/bin/sh
 ""`$SYSTEMROOT/System32/cmd.exe"" /c ""`$(basename $0).bat `$*""
 exit `$?" | Out-File $nugetChocolateyUninstallAlias.Replace(".bat","") -encoding ASCII 
+
+
+Write-Host "Creating `'$nugetChocolateyProvidesAlias`' so you can call 'chocolatey whatprovides' from a shortcut of 'cprovides'."
+"@echo off
+SET DIR=%~dp0%
+""$nugetChocolateyPath\chocolatey.cmd"" whatprovides %*" | Out-File $nugetChocolateyProvidesAlias -encoding ASCII
+
+"#!/bin/sh
+""`$SYSTEMROOT/System32/cmd.exe"" /c ""`$(basename $0).bat `$*""
+exit `$?" | Out-File $nugetChocolateyProvidesAlias.Replace(".bat","") -encoding ASCII 
 
 }
 
