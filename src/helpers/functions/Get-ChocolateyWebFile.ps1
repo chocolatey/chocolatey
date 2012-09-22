@@ -34,7 +34,8 @@ param(
   [string] $packageName,
   [string] $fileFullPath,
   [string] $url,
-  [string] $url64bit = $url
+  [string] $url64bit = $url,
+  [hashtable] $options = @{Headers=@{}}
 )
   Write-Debug "Running 'Get-ChocolateyWebFile' for $packageName with url:`'$url`', fileFullPath:`'$fileFullPath`',and url64bit:`'$url64bit`'";
   
@@ -60,7 +61,7 @@ param(
   #$downloader = new-object System.Net.WebClient
   #$downloader.DownloadFile($url, $fileFullPath)
   if ($url.StartsWith('http')) {
-    Get-WebFile $url $fileFullPath
+    Get-WebFile $url $fileFullPath -options $options
   } elseif ($url.StartsWith('ftp')) {
     Get-FtpFile $url $fileFullPath
   } else {

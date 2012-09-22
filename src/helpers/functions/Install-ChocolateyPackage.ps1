@@ -47,6 +47,7 @@ param(
   [string] $silentArgs = '',
   [string] $url,
   [string] $url64bit = $url,
+  [hashtable] $options = @{Headers=@{}},
   $validExitCodes = @(0)
 )
   
@@ -58,7 +59,7 @@ param(
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
     $file = Join-Path $tempDir "$($packageName)Install.$fileType"
   
-    Get-ChocolateyWebFile $packageName $file $url $url64bit
+    Get-ChocolateyWebFile $packageName $file $url $url64bit -options $options
     Install-ChocolateyInstallPackage $packageName $fileType $silentArgs $file -validExitCodes $validExitCodes
     Write-ChocolateySuccess $packageName
   } catch {
