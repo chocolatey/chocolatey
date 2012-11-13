@@ -5,17 +5,21 @@ $sysDrive = $env:SystemDrive
 $defaultChocolateyPathOld = "$sysDrive\NuGet"
 
 function Set-ChocolateyInstallFolder($folder){
-  #if(test-path $folder){
+  $procVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::Process)
+  $userVar = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+
+  # only set an env var if the value came from a process based env or the default value
+  # the default value can be assumed if both proc and user scoped vars are null
+  # Otherwise it came from a sys or existing user var which means we don't have to set it
+  if ( ($procVar -eq $folder) -or ($procVar -eq $null -and $userVar -eq $null)) {
     write-host "Creating $chocInstallVariableName as a User Environment variable and setting it to `'$folder`'"
     [Environment]::SetEnvironmentVariable($chocInstallVariableName, $folder, [System.EnvironmentVariableTarget]::User)
-  #}
-  #else{
-  #  throw "Cannot set the chocolatey install folder. Folder not found [$folder]"
-  #}
+  }
 }
 
-function Get-ChocolateyInstallFolder(){
-  [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
+function Get-ChocolateyInstallFolder {
+  # Use the chocInstallVar from any environment: sys, usr, proc
+  [Environment]::GetEnvironmentVariable($chocInstallVariableName)
 }
 
 function Create-DirectoryIfNotExists($folderName){
@@ -145,9 +149,9 @@ param(
   if($alreadyInitializedNugetPath -and $alreadyInitializedNugetPath -ne $chocolateyPath -and $alreadyInitializedNugetPath -ne $defaultChocolateyPathOld){
     $chocolateyPath = $alreadyInitializedNugetPath
   }
-  else {
-    Set-ChocolateyInstallFolder $chocolateyPath
-  }
+
+  # Always set the path in case its coming from process
+  Set-ChocolateyInstallFolder $chocolateyPath
 
   if(!(test-path $chocolateyPath)){
     mkdir $chocolateyPath | out-null
