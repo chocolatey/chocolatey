@@ -18,14 +18,18 @@ param(
   
   Write-Debug "based on: `'$srcArgs`' feed"
   
-  foreach ($package in $packages) {
-    $packageArgs = "list ""$package"" $srcArgs"
-    if ($prerelease -eq $true) {
+  $logFile = Join-Path $nugetChocolateyPath 'list.log'
+  $packageArgs = "list $srcArgs"
+  if ($prerelease -eq $true) {
       $packageArgs = $packageArgs + " -Prerelease";
-    }
-    #write-host "TEMP: Args - $packageArgs"
+  }
 
-    $logFile = Join-Path $nugetChocolateyPath 'list.log'
+  if (!$localOnly) {
+    Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile
+    Start-Sleep 1 #let it finish writing to the config file
+  }
+
+  foreach ($package in $packages) {
 
     $versionFound = $chocVer
     
@@ -40,8 +44,6 @@ param(
     }
     
     if (!$localOnly) {
-      Start-Process $nugetExe -ArgumentList $packageArgs -NoNewWindow -Wait -RedirectStandardOutput $logFile
-      Start-Sleep 1 #let it finish writing to the config file
       $versionLatest = Get-Content $logFile | ?{$_ -match "^$package\s+\d+"} | sort $_ -Descending | select -First 1 
       $versionLatest = $versionLatest -replace "$package ", "";
       #todo - make this compare prerelease information as well
