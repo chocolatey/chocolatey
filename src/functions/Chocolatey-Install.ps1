@@ -20,6 +20,10 @@ param(
     "cygwin" { Chocolatey-Cygwin $packageName $installerArguments; }
     "python" { Chocolatey-Python $packageName $version $installerArguments; }
     "ruby" { Chocolatey-RubyGem $packageName $version $installerArguments; }
-    default { Chocolatey-NuGet $packageName $source $version $installerArguments; }
+    default { 
+      try {
+        Chocolatey-NuGet $packageName $source $version $installerArguments; }
+      catch {throw $_.exception}
+    }
   }
 }
