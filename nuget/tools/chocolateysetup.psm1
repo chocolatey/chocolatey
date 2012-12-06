@@ -47,72 +47,72 @@ $nugetChocolateyUninstallAlias = Join-Path $chocolateyExePath 'cuninst.bat'
 Write-Host "Creating `'$nugetChocolateyBinFile`' so you can call 'chocolatey' from anywhere."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" %*" | Out-File $nugetChocolateyBinFile -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" %*" | Out-File $nugetChocolateyBinFile -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyInstallAlias`' so you can call 'chocolatey install' from a shortcut of 'cinst'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" install %*" | Out-File $nugetChocolateyInstallAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" install %*" | Out-File $nugetChocolateyInstallAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyInstallIfMissingAlias`' so you can call 'chocolatey installmissing' from a shortcut of 'cinstm'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" installmissing %*" | Out-File $nugetChocolateyInstallIfMissingAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" installmissing %*" | Out-File $nugetChocolateyInstallIfMissingAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyUpdateAlias`' so you can call 'chocolatey update' from a shortcut of 'cup'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" update %*" | Out-File $nugetChocolateyUpdateAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" update %*" | Out-File $nugetChocolateyUpdateAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyListAlias`' so you can call 'chocolatey list' from a shortcut of 'clist'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" list %*" | Out-File $nugetChocolateyListAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" list %*" | Out-File $nugetChocolateyListAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyVersionAlias`' so you can call 'chocolatey version' from a shortcut of 'cver'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" version %*" | Out-File $nugetChocolateyVersionAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" version %*" | Out-File $nugetChocolateyVersionAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyWebPiAlias`' so you can call 'chocolatey webpi' from a shortcut of 'cwebpi'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" webpi %*" | Out-File $nugetChocolateyWebPiAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" webpi %*" | Out-File $nugetChocolateyWebPiAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyWindowsFeaturesAlias`' so you can call 'chocolatey windowsfeatures' from a shortcut of 'cwindowsfeatures'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" windowsfeatures %*" | Out-File $nugetChocolateyWindowsFeaturesAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" windowsfeatures %*" | Out-File $nugetChocolateyWindowsFeaturesAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyCygwinAlias`' so you can call 'chocolatey cygwin' from a shortcut of 'ccygwin'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" cygwin %*" | Out-File $nugetChocolateyCygwinAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" cygwin %*" | Out-File $nugetChocolateyCygwinAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyPythonAlias`' so you can call 'chocolatey python' from a shortcut of 'cpython'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" python %*" | Out-File $nugetChocolateyPythonAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" python %*" | Out-File $nugetChocolateyPythonAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyGemAlias`' so you can call 'chocolatey gem' from a shortcut of 'cgem'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" gem %*" | Out-File $nugetChocolateyGemAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" gem %*" | Out-File $nugetChocolateyGemAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyPackAlias`' so you can call 'chocolatey pack' from a shortcut of 'cpack'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" pack %*" | Out-File $nugetChocolateyPackAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" pack %*" | Out-File $nugetChocolateyPackAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyPushAlias`' so you can call 'chocolatey push' from a shortcut of 'cpush'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" uninstall %*" | Out-File $nugetChocolateyUninstallAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" uninstall %*" | Out-File $nugetChocolateyUninstallAlias -encoding ASCII
 
 Write-Host "Creating `'$nugetChocolateyUninstallAlias`' so you can call 'chocolatey uninstall' from a shortcut of 'cuninst'."
 "@echo off
 SET DIR=%~dp0%
-""$nugetChocolateyPath\chocolatey.cmd"" push %*" | Out-File $nugetChocolateyPushAlias -encoding ASCII
+call ""$nugetChocolateyPath\chocolatey.cmd"" push %*" | Out-File $nugetChocolateyPushAlias -encoding ASCII
 }
 
 function Initialize-Chocolatey {

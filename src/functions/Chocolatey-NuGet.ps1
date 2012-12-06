@@ -21,8 +21,13 @@ param(
 Write-Host "Chocolatey (v$chocVer) is installing $packageName and dependencies. By installing you accept the license for $packageName and each dependency you are installing." -ForegroundColor $RunNote -BackgroundColor Black
 Write-Debug "Installing packages to `"$nugetLibPath`"."
 
-  $nugetOutput = (Run-NuGet $packageName $source $version).Split("`n")
-
+  try {
+    $nugetOutput = (Run-NuGet $packageName $source $version).Split("`n")
+  }
+  catch {
+    throw $_.exception
+  }
+  
   foreach ($line in $nugetOutput) {
     Write-Debug "Evaluating NuGet output for line: $line"
 
