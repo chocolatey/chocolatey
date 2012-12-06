@@ -21,8 +21,8 @@ param(
 Write-Host "Chocolatey (v$chocVer) is installing $packageName and dependencies. By installing you accept the license for $packageName and each dependency you are installing." -ForegroundColor $RunNote -BackgroundColor Black
 Write-Debug "Installing packages to `"$nugetLibPath`"."
 
-  $nugetOutput = (Run-NuGet $packageName $source $version).Split("`n")
-
+  $nugetOutput = (Invoke-ChocolateyFunction "Run-NuGet" @($packageName,$source,$version)).Split("`n")
+  
   foreach ($line in $nugetOutput) {
     Write-Debug "Evaluating NuGet output for line: $line"
 
@@ -70,7 +70,7 @@ Write-Debug "Installing packages to `"$nugetLibPath`"."
 
           if ([System.IO.Directory]::Exists($packageFolder)) {
             Delete-ExistingErrorLog $installedPackageName
-            Run-ChocolateyPS1 $packageFolder $installedPackageName "install" $installerArguments
+            Invoke-ChocolateyFunction "Run-ChocolateyPS1" @($packageFolder, $installedPackageName, "install", $installerArguments)
             Get-ChocolateyBins $packageFolder
             if ($installedPackageName.ToLower().EndsWith('.extension')) {
               Chocolatey-InstallExtension $packageFolder $installedPackageName
