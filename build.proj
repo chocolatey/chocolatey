@@ -1,0 +1,52 @@
+﻿<Project ToolsVersion="4.0"
+         DefaultTargets="Go"
+         xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <GoDependsOn>Setup;Tests;PrepareNuGetFiles;Package</GoDependsOn>
+    <Configuration>Release</Configuration>
+    <Platform>Any CPU</Platform>
+    <BuildDirectory>_packaged_output\</BuildDirectory>
+    <BuildPath>$(MSBuildProjectDirectory)\$(BuildDirectory)</BuildPath>
+    <NuGetDirectory>$(MSBuildProjectDirectory)\nuget</NuGetDirectory>
+    <NuGetFilesDirectory>$(MSBuildProjectDirectory)\src</NuGetFilesDirectory>
+  </PropertyGroup>
+
+  <Target Name="Go" DependsOnTargets="$(GoDependsOn)" />
+  
+  <Target Name="Tests">
+    <Exec Command="cmd /c $(baseDir)test.cmd" />
+  </Target>
+  
+  <Target Name="Setup">
+    <Exec Command="cmd /c $(baseDir)setup.cmd" />
+  </Target>
+
+  <Target Name="PrepareNuGetFiles">
+   <ItemGroup>
+      <NuGetFiles Include="$(NuGetDirectory)\**\*" />
+      <NuGetFilesToPack Include="$(NuGetFilesDirectory)\**\*" />
+    </ItemGroup>
+    <Copy SourceFiles="@(NuGetFiles)"
+      DestinationFiles="@(NuGetFiles->'$(BuildPath)\nuget\%(RecursiveDir)%(Filename)%(Extension)')"
+      Retries="3"
+      RetryDelayMilliseconds="300" 
+      />
+    <Copy SourceFiles="@(NuGetFilesToPack)"
+      DestinationFiles="@(NuGetFilesToPack->'$(BuildPath)\nuget\tools\chocolateyInstall\%(RecursiveDir)%(Filename)%(Extension)')"
+      Retries="3"
+      RetryDelayMilliseconds="300" 
+      />
+  </Target>
+  
+  <Target Name="Package" DependsOnTargets="PrepareNuGetFiles">
+  <ItemGroup>
+      <NuspecFiles Include="$(BuildPath)**\*nuspec" />
+      <FilesToDelete Exclude="$(BuildPath)\**\*.nupkg" Include="$(BuildPath)\**\*" />
+      <DirectoriesToDelete Include="$(BuildPath)\nuget" />
+    </ItemGroup>
+    <Exec Command="FOR /F &quot;delims=|&quot; %%I IN ('DIR %systemdrive%\chocolatey\lib\nuget.commandline.* /B /O:D') DO %systemdrive%\chocolatey\lib\%%I\tools\nuget pack &quot;%(NuspecFiles.FullPath)&quot; -NoPackageAnalysis" WorkingDirectory="$(BuildPath)" />
+    <Delete Files="@(FilesToDelete)" />
+    <RemoveDir Directories="@(DirectoriesToDelete)" />
+  </Target>
+
+</Project>
