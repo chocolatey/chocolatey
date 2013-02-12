@@ -45,7 +45,12 @@ param(
     Write-Host $errors -BackgroundColor Red -ForegroundColor White
     #Throw $errors
   }
-  
+
+  if (($errors -ne '') -or ($process.ExitCode -ne 0)) {
+    $error = ("Execution failed for command: `"{0}`" {1}" -f $nugetExe, $packageArgs)
+    throw $error
+  }
+
   if (($nugetOutput -eq '' -or $nugetOutput -eq $null) -and ($errors -eq '' -or $errors -eq $null)) {
     $noExecution = 'Execution of NuGet not detected. Please make sure you have .NET Framework 4.0 installed and are passing arguments to the install command.'
     #write-host  -BackgroundColor Red -ForegroundColor White
