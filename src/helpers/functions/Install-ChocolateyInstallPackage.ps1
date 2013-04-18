@@ -77,11 +77,13 @@ param(
   }
 
   if($fileType -like 'msu') {
+
     if ($overrideArguments) {
-      Start-ChocolateyProcessAsAdmin "$additionalInstallArgs" $file -validExitCodes $validExitCodes
+      $msuArgs = "$file $additionalInstallArgs"
     } else {
-      Start-ChocolateyProcessAsAdmin "$silentArgs $additionalInstallArgs" $file -validExitCodes $validExitCodes
+      $msuArgs = "$file $silentArgs $additionalInstallArgs"
     }
+    Start-ChocolateyProcessAsAdmin "$msuArgs" 'wusa.exe' -validExitCodes $validExitCodes
   }
 
   write-host "$packageName has been installed."
