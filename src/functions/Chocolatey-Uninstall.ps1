@@ -12,7 +12,7 @@ param(
     return
   }
 
-    Write-Host "Chocolatey (v$chocVer) is unininstalling $packageName..." -ForegroundColor $RunNote -BackgroundColor Black
+    Write-Host "Chocolatey (v$chocVer) is uninstalling $packageName..." -ForegroundColor $RunNote -BackgroundColor Black
   
 	
 	$packages = $packageName
