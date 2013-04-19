@@ -82,6 +82,7 @@ switch -wildcard ($command)
   "search" { Chocolatey-List $packageName $source; }
   "list" { Chocolatey-List $packageName $source; }
   "version" { Chocolatey-Version $packageName $source; }
+  "whatprovides" { Chocolatey-WhatProvides $packageName; }
   "webpi" { Chocolatey-WebPI $packageName $installArguments; }
   "windowsfeatures" { Chocolatey-WindowsFeatures $packageName; }
   "cygwin" { Chocolatey-Cygwin $packageName $installArguments; }
