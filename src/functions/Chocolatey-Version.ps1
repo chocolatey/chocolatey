@@ -1,6 +1,7 @@
 ﻿function Chocolatey-Version {
 param(
   [string] $packageName='',
+  [string] $version='',
   [string] $source=''
 )
 
@@ -11,7 +12,13 @@ param(
   if ($packageName -eq 'all') {
     Write-Debug "Reading all packages in $nugetLibPath"
     $packageFolders = Get-ChildItem $nugetLibPath | sort name
-    $packages = $packageFolders -replace "(\.\d.*)+"|gu 
+    $packages = $packageFolders -replace "(\.\d.*)+"|gu
+
+  }
+
+  if ($version -eq 'all') {
+    $packageFolders=Get-PackageFoldersForPackage $packageName
+    $packageversions=$packageFolders -replace "$packageName\."
   }
   
   $srcArgs = Get-SourceArguments $source
@@ -32,7 +39,14 @@ param(
     
     if ($packageName -ne 'chocolatey') {
       $versionFound = 'no version'
-      $packageFolderVersion = Get-LatestPackageVersion(Get-PackageFolderVersions($package))
+      
+      if ($version -eq 'all') {
+      $packagefolderversion = $packageversions
+      }
+      else {
+        $packageFolderVersion = Get-LatestPackageVersion(Get-PackageFolderVersions($package))
+      }
+
 
       if ($packageFolderVersion -notlike '') { 
         #Write-Host $packageFolder
@@ -71,15 +85,19 @@ param(
           $verMessage = "$package does not appear to be on the source(s) specified: "
       }
       
-      $versions = @{name=$package; latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; verMessage = $verMessage}
-      $versionsObj = New-Object –typename PSObject -Property $versions
-      $versionsObj
+      foreach ($versions in $versionfound) {
+        $versions = @{name=$package; latest = $versionLatest; found = $versions; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; verMessage = $verMessage}
+        $versionsObj = New-Object –typename PSObject -Property $versions
+        $versionsObj
+      }
     }
     
     else {
-      $versions = @{name=$package; found = $versionFound}
-      $versionsObj = New-Object –typename PSObject -Property $versions
-      $versionsObj
+      foreach ($versions in $versionfound) {
+        $versions = @{name=$package; found = $versions}
+        $versionsObj = New-Object –typename PSObject -Property $versions
+        $versionsObj
+      }
     }
   }
 }

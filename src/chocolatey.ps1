@@ -81,7 +81,7 @@ switch -wildcard ($command)
   "uninstall" {Chocolatey-Uninstall $packageName $version $installArguments; }
   "search" { Chocolatey-List $packageName $source; }
   "list" { Chocolatey-List $packageName $source; }
-  "version" { Chocolatey-Version $packageName $source; }
+  "version" { Chocolatey-Version $packageName $version $source; }
   "webpi" { Chocolatey-WebPI $packageName $installArguments; }
   "windowsfeatures" { Chocolatey-WindowsFeatures $packageName; }
   "cygwin" { Chocolatey-Cygwin $packageName $installArguments; }
