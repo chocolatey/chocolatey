@@ -8,7 +8,8 @@ param(
   Write-Host "Chocolatey (v$chocVer) is installing $packageName and dependencies (from Windows Features). By installing you accept the license for $packageName and each dependency you are installing." -ForegroundColor $RunNote -BackgroundColor Black
   
   $chocoInstallLog = Join-Path $nugetChocolateyPath 'chocolateyWindowsFeaturesInstall.log';
-  Remove-LastInstallLog $chocoInstallLog
+  Append-Log $chocoInstallLog
+  
   $checkStatement=@"
 `$dismInfo=(DISM /Online /Get-FeatureInfo /FeatureName:$packageName)
 if(`$dismInfo -contains 'State : Enabled') {return}
