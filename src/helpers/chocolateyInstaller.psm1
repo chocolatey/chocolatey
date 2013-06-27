@@ -1,4 +1,9 @@
-﻿$helpersPath = (Split-Path -parent $MyInvocation.MyCommand.Definition);
+﻿$RunNote = "DarkCyan"
+$Warning = "Magenta"
+$ErrorColor = "Red"
+$Note = "Green"
+
+$helpersPath = (Split-Path -parent $MyInvocation.MyCommand.Definition);
 
 $DebugPreference = "SilentlyContinue"
 if ($env:ChocolateyEnvironmentDebug -eq 'true') {$DebugPreference = "Continue";}
@@ -24,6 +29,8 @@ Export-ModuleMember -Function `
 	Install-ChocolateyFileAssociation,`
 	Install-ChocolateyEnvironmentVariable,`
 	Install-ChocolateyVsixPackage,`
+	New-Binfile,`
+	Remove-Binfile,`
 	Write-ChocolateySuccess,`
 	Write-ChocolateyFailure,`
 	Write-Host,`Write-Debug,`Write-Error,`

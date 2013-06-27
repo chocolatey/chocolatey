@@ -1,14 +1,28 @@
-function Generate-BinFile {
+function New-BinFile {
+<#
+.SYNOPSIS 
+    Generate a wrapper batch and bash shell file for an executable
+.PARAMETER name
+    The basename of the batch and bash shell files
+.PARAMETER path
+    The full path of the executable to set the batch and bash shell files for
+.PARAMETER outPath
+    The folder to create the wrapper batch and bash shell files in
+.PARAMETER useStart
+    Set to true to have the wrapper batch and bash shell files execute $path asynchronously
+#>
+[CmdletBinding()]
 param(
   [string] $name, 
   [string] $path,
+  [string] $outPath,
   [switch] $useStart
 )
   Write-Debug "Running 'Generate-BinFile' for $name with path:`'$path`'";
 
-  $packageBatchFileName = Join-Path $nugetExePath "$name.bat"
-  $packageBashFileName = Join-Path $nugetExePath "$name"
-  $path = $path.ToLower().Replace($nugetPath.ToLower(), "%DIR%..\").Replace("\\","\")
+  $packageBatchFileName = Join-Path $outPath "$name.bat"
+  $packageBashFileName = Join-Path $outPath "$name"
+  $path = $path.ToLower().Replace($outPath.ToLower(), "%DIR%..\").Replace("\\","\")
   $pathBash = $path.Replace("%DIR%..\","`$DIR/../").Replace("\","/")
   Write-Host "Adding $packageBatchFileName and pointing to `'$path`'." -ForegroundColor $Note
   Write-Host "Adding $packageBashFileName and pointing to `'$path`'." -ForegroundColor $Note

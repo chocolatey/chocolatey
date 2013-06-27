@@ -19,15 +19,15 @@ Adding batch files for any executables found to a location on PATH. In other wor
         if (!(test-path($file.FullName + '.ignore'))) {
           if (test-path($file.FullName + '.gui')) {
             if ($uninstall) {
-              Remove-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName
+              Remove-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName $nugetExePath
             } else {
-              Generate-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName -useStart
+              New-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName $nugetExePath -useStart
             }
           } else {
             if ($uninstall) {
-              Remove-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName
+              Remove-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName $nugetExePath
             } else {
-              Generate-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName
+              New-BinFile $file.Name.Replace(".exe","").Replace(".EXE","") $file.FullName $nugetExePath
             }
           }
           $batchCreated = $true
