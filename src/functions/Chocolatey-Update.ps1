@@ -5,6 +5,7 @@ param(
 )
   if ($packageName -eq '') {$packageName = 'chocolatey';}
   Write-Debug "Running 'Chocolatey-Update' for $packageName with source:`'$source`'.";
+  Write-Host "Running 'Chocolatey-Update' for $packageName.";
   
   $packages = $packageName
   if ($packageName -eq 'all') {
@@ -19,7 +20,7 @@ param(
     } elseif ($versions -ne $null -and $force -and $versions.'foundCompare' -eq $versions.'latestCompare') {
         Chocolatey-NuGet $package $source
     } else {
-      Write-Debug "$packageName - you have either a newer version or the same version already available"
+      Write-Host "$packageName - you have either a newer version or the same version already available"
     }
 	}
 }
