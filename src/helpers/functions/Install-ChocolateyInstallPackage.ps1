@@ -54,7 +54,7 @@ param(
   $additionalInstallArgs = $env:chocolateyInstallArguments;
   if ($additionalInstallArgs -eq $null) { $additionalInstallArgs = ''; }
   $overrideArguments = $env:chocolateyInstallOverride;
-    
+
   if ($fileType -like 'msi') {
     $msiArgs = "/i `"$file`"" 
     if ($overrideArguments) { 
@@ -63,7 +63,17 @@ param(
     } else {
       $msiArgs = "$msiArgs $silentArgs $additionalInstallArgs";
     }
-    
+
+    $packagelibPath=$env:chocolateyPackageFolder
+    if (!(Test-Path -path $packagelibPath)) {
+      New-Item $packagelibPath -type directory
+    }
+
+    $msiProductCodeTxt=join-path $packagelibPath "$packageName-msicode.txt"
+    $msiFilesTxt=join-path $packagelibPath "$packageName-msifiles.txt"
+    $msiProductCode=Get-MSIProductCode $file |add-content $msiProductCodeTxt
+    $msiFiles=Get-MSIFiles $file |add-content $msiFilesTxt
+
     Start-ChocolateyProcessAsAdmin "$msiArgs" 'msiexec' -validExitCodes $validExitCodes
     #Start-Process -FilePath msiexec -ArgumentList $msiArgs -Wait
   }
