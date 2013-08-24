@@ -225,3 +225,38 @@ Describe "When calling Chocolatey-Install with windowsfeatures as the source" {
     Assert-MockCalled Chocolatey-NuGet 0
   }
 }
+
+Describe "When calling Chocolatey-Install with --help as filename" {
+  Mock Chocolatey-PackagesConfig {}
+  Mock Chocolatey-WebPI {}
+  Mock Chocolatey-WindowsFeatures {}
+  Mock Chocolatey-RubyGem {}
+  Mock Chocolatey-NuGet {}
+  Mock Chocolatey-Help {}
+
+  Chocolatey-Install "--help" 
+
+   It "should not call Chocolatey-PackagesConfig" {
+    Assert-MockCalled Chocolatey-PackagesConfig 0
+  }
+  
+  It "should not call Chocolatey-WebPI" {
+    Assert-MockCalled Chocolatey-WebPI 0
+  }
+  
+  It "should call Chocolatey-WindowsFeatures" {
+    Assert-MockCalled Chocolatey-WindowsFeatures 0 
+  }
+
+  It "should not call Chocolatey-RubyGem" {
+    Assert-MockCalled Chocolatey-RubyGem 0
+  }
+
+  It "should not call Chocolatey-NuGet" {
+    Assert-MockCalled Chocolatey-NuGet 0
+  }
+
+  It "should call Chocolatey-Help"{
+    Assert-MockCalled Chocolatey-Help
+}
+}
