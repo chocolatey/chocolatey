@@ -14,30 +14,30 @@ function Install-ChocolateyPinnedItem {
 
 	# Pin (to start)
 	$verbPin = @{}
-	$verbPin['da-DK'] = "Fastg¯r"
+	$verbPin['da-DK'] = "Fastg√∏r"
 	$verbPin['en-US'] = "Pin" 
-	$verbPin['fi-FI'] = "Kiinnit‰"
+	$verbPin['fi-FI'] = "Kiinnit√§"
 	$verbPin['nb-NO'] = "Fest"
 	$verbPin['nl-NL'] = "Vastmaken" 
-	$verbPin['sv-SE'] = "F‰st"
+	$verbPin['sv-SE'] = "F√§st"
 
 	# (Pin to) Start
 	$verbStart = @{}
 	$verbStart['da-DK'] = "Start"
 	$verbStart['en-US'] = "Start" 
-	$verbStart['fi-FI'] = "K‰ynnist‰"
+	$verbStart['fi-FI'] = "K√§ynnist√§"
 	$verbStart['nb-NO'] = "Start"
-	$verbStart['nl-NL'] = "vastmaken" 
+	$verbStart['nl-NL'] = "Start" 
 	$verbStart['sv-SE'] = "Start"
 	
 	# (Pin to) Taskbar
 	$verbTask = @{}
 	$verbTask['da-DK'] = "Proceslinje"
 	$verbTask['en-US'] = "Task" 
-	$verbTask['fi-FI'] = "Teht‰v‰palkkiin"
+	$verbTask['fi-FI'] = "Teht√§v√§lkkiin"
 	$verbTask['nb-NO'] = "Oppgavelinjen"
 	$verbTask['nl-NL'] = "Taak" 
-	$verbTask['sv-SE'] = "Aktivitetsf‰ltet"
+	$verbTask['sv-SE'] = "Aktivitetsf√§ltet"
 
 	# Get Locale
 	$locale = (get-culture).Name
