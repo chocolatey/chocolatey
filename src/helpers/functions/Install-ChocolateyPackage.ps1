@@ -27,6 +27,24 @@ This is the url to download the file from.
 .PARAMETER Url64bit
 OPTIONAL - If there is an x64 installer to download, please include it here. If not, delete this parameter
 
+.PARAMETER options
+OPTIONAL - Specify custom headers
+
+Example:
+-------- 
+	$options = 
+	@{
+		Headers = @{
+			Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'; 
+			'Accept-Charset' = 'ISO-8859-1,utf-8;q=0.7,*;q=0.3';
+			'Accept-Language' = 'en-GB,en-US;q=0.8,en;q=0.6';
+			Cookie = 'products.download.email=ewilde@gmail.com';
+			Referer = 'http://submain.com/download/ghostdoc/';
+		}
+	}
+	
+	Get-ChocolateyWebFile 'ghostdoc' 'http://submain.com/download/GhostDoc_v4.0.zip' -options $options
+	
 .EXAMPLE
 Install-ChocolateyPackage '__NAME__' 'EXE_OR_MSI' 'SILENT_ARGS' 'URL' '64BIT_URL_DELETE_IF_NO_64BIT'
 
@@ -47,6 +65,7 @@ param(
   [string] $silentArgs = '',
   [string] $url,
   [string] $url64bit = $url,
+  [hashtable] $options = @{Headers=@{}},
   $validExitCodes = @(0)
 )
   
@@ -58,7 +77,7 @@ param(
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir) | Out-Null}
     $file = Join-Path $tempDir "$($packageName)Install.$fileType"
   
-    Get-ChocolateyWebFile $packageName $file $url $url64bit
+    Get-ChocolateyWebFile $packageName $file $url $url64bit -options $options
     Install-ChocolateyInstallPackage $packageName $fileType $silentArgs $file -validExitCodes $validExitCodes
     Write-ChocolateySuccess $packageName
   } catch {

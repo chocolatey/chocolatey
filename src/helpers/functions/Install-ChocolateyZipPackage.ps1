@@ -19,6 +19,24 @@ OPTIONAL - If there is an x64 installer to download, please include it here. If 
 .PARAMETER UnzipLocation
 This is a location to unzip the contents to, most likely your script folder.
 
+.PARAMETER options
+OPTIONAL - Specify custom headers
+
+Example:
+-------- 
+	$options = 
+	@{
+		Headers = @{
+			Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'; 
+			'Accept-Charset' = 'ISO-8859-1,utf-8;q=0.7,*;q=0.3';
+			'Accept-Language' = 'en-GB,en-US;q=0.8,en;q=0.6';
+			Cookie = 'products.download.email=ewilde@gmail.com';
+			Referer = 'http://submain.com/download/ghostdoc/';
+		}
+	}
+	
+	Get-ChocolateyWebFile 'ghostdoc' 'http://submain.com/download/GhostDoc_v4.0.zip' -options $options
+	
 .EXAMPLE
 Install-ChocolateyZipPackage '__NAME__' 'URL' "$(Split-Path -parent $MyInvocation.MyCommand.Definition)"
 
@@ -38,7 +56,8 @@ param(
   [string] $url,
   [string] $unzipLocation,
   [string] $url64bit = $url,
-  [string] $specificFolder =""
+  [string] $specificFolder ="",
+  [hashtable] $options = @{Headers=@{}}
 )
   Write-Debug "Running 'Install-ChocolateyZipPackage' for $packageName with url:`'$url`', unzipLocation: `'$unzipLocation`', url64bit: `'$url64bit`' ";
   
@@ -50,7 +69,7 @@ param(
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
     $file = Join-Path $tempDir "$($packageName)Install.$fileType"
     
-    Get-ChocolateyWebFile $packageName $file $url $url64bit
+    Get-ChocolateyWebFile $packageName $file $url $url64bit -options $options
     Get-ChocolateyUnzip "$file" $unzipLocation $specificFolder $packageName
     
     Write-ChocolateySuccess $packageName

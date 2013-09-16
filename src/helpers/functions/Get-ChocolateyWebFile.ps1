@@ -20,6 +20,24 @@ This is the url to download the file from.
 .PARAMETER Url64bit
 OPTIONAL - If there is an x64 installer to download, please include it here. If not, delete this parameter
 
+.PARAMETER options
+OPTIONAL - Specify custom headers
+
+Example:
+-------- 
+	$options = 
+	@{
+		Headers = @{
+			Accept = 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8'; 
+			'Accept-Charset' = 'ISO-8859-1,utf-8;q=0.7,*;q=0.3';
+			'Accept-Language' = 'en-GB,en-US;q=0.8,en;q=0.6';
+			Cookie = 'products.download.email=ewilde@gmail.com';
+			Referer = 'http://submain.com/download/ghostdoc/';
+		}
+	}
+	
+	Get-ChocolateyWebFile 'ghostdoc' 'http://submain.com/download/GhostDoc_v4.0.zip' -options $options
+
 .EXAMPLE
 Get-ChocolateyWebFile '__NAME__' 'C:\somepath\somename.exe' 'URL' '64BIT_URL_DELETE_IF_NO_64BIT'
 
@@ -34,7 +52,8 @@ param(
   [string] $packageName,
   [string] $fileFullPath,
   [string] $url,
-  [string] $url64bit = $url
+  [string] $url64bit = $url,
+  [hashtable] $options = @{Headers=@{}}
 )
   Write-Debug "Running 'Get-ChocolateyWebFile' for $packageName with url:`'$url`', fileFullPath:`'$fileFullPath`',and url64bit:`'$url64bit`'";
   $url32bit = $url;
@@ -58,7 +77,7 @@ param(
   #$downloader = new-object System.Net.WebClient
   #$downloader.DownloadFile($url, $fileFullPath)
   if ($url.StartsWith('http')) {
-    Get-WebFile $url $fileFullPath
+    Get-WebFile $url $fileFullPath -options $options
   } elseif ($url.StartsWith('ftp')) {
     Get-FtpFile $url $fileFullPath
   } else {
