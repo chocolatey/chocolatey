@@ -30,34 +30,65 @@ If you do not accept the license of a package you are installing, please uninsta
 $h2
 Waiver of Responsibility
 $h2
-The use of chocolatey means that an individual using chocolatey assumes the responsibility for any changes (including any damages of any sort) that occur to the system as a result of using chocolatey. 
-This does not supercede the verbage or enforcement of the license for chocolatey (currently Apache 2.0), it is only noted here that you are waiving any rights to collect damages by your use of chocolatey. 
-It is recommended you read the license (http://www.apache.org/licenses/LICENSE-2.0) to gain a full understanding (especially section 8. Limitation of Liability) prior to using chocolatey. 
+The use of chocolatey means that an individual using chocolatey assumes the responsibility for any changes (including any damages of any sort) that occur to the system as a result of using chocolatey.
+This does not supercede the verbage or enforcement of the license for chocolatey (currently Apache 2.0), it is only noted here that you are waiving any rights to collect damages by your use of chocolatey.
+It is recommended you read the license (http://www.apache.org/licenses/LICENSE-2.0) to gain a full understanding (especially section 8. Limitation of Liability) prior to using chocolatey.
 $h2
 }
 $h2
 $h2
 Usage
 $h2
-chocolatey [install [packageName [-source source] [-version version] | pathToPackagesConfig]  | installmissing packageName [-source source] | update packageName [-source source] [-version version] | list [packageName] [-source source] | help | version [packageName] | webpi packageName | windowsfeatures packageName | gem packageName [-version version] |uninstall packageName]
 
-example: chocolatey install nunit
-example: chocolatey install nunit -version 2.5.7.10213
-example: chocolatey install packages.config
-example: chocolatey installmissing nunit
-example: chocolatey update nunit -source http://somelocalfeed.com/nuget/
-example: chocolatey help
-example: chocolatey list (might take awhile)
-example: chocolatey list nunit
-example: chocolatey version
-example: chocolatey version nunit
-example: chocolatey uninstall
+chocolatey command [options]
 
-A shortcut to 'chocolatey install' is 'cinst'
-cinst [packageName  [-source source] [-version version] | pathToPackagesConfig]
-example: cinst 7zip
-example: cinst ruby -version 1.8.7
-example: cinst packages.config
+commands:
+install
+installmissing
+update
+uninstall
+search
+list
+version
+webpi
+windowsfeatures
+cygwin
+python
+gem
+pack
+push
+help
+sources
+
+$h1
+For more detailed help, use: 'chocolatey [command] help'
+example: chocolatey list help
 $h1
 "@ | Write-Host
 }
+# chocolatey [install [packageName [-source source] [-version version] | pathToPackagesConfig]  | installmissing packageName [-source source] | update packageName [-source source] [-version version] | list [packageName] [-source source] | help | version [packageName] | webpi packageName | windowsfeatures packageName | gem packageName [-version version] | uninstall [packageName] | sources [list] | [add name source] | [remove name] | [enable name] | [disable name]
+
+# missing usage above:
+# uninstall, search, cygwin, python, pack, push
+
+# missing examples below:
+# search, webpi, windowsfeatures, cygwin, python, gem, pack, push
+
+# example: chocolatey install nunit
+# example: chocolatey install nunit -version 2.5.7.10213
+# example: chocolatey install packages.config
+# example: chocolatey installmissing nunit
+# example: chocolatey update nunit -source http://somelocalfeed.com/nuget/
+# example: chocolatey help
+# example: chocolatey list (might take awhile)
+# example: chocolatey list nunit
+# example: chocolatey version
+# example: chocolatey version nunit
+# example: chocolatey uninstall
+# example: chocolatey sources add local http://somelocalfeed.com/nuget/
+
+# A shortcut to 'chocolatey install' is 'cinst'
+# cinst [packageName  [-source source] [-version version] | pathToPackagesConfig]
+# example: cinst 7zip
+# example: cinst ruby -version 1.8.7
+# example: cinst packages.config
