@@ -12,6 +12,11 @@ param(
     Chocolatey-InstallAll $source
     return
   }
+  if ($packageName -eq ''){
+    Write-Debug "No package to run, aborting";
+    Write-Host "You should specify a package to install. consult 'chocolatey /?' . Chocolately would now abort"
+    return	
+  }
 
   $srcArgs = ""
   if ($source -ne '') {

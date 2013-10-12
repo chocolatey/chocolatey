@@ -24,3 +24,14 @@ Describe "when calling Chocolatey-NuGet with packageName 'all'" {
   }
   
 }
+
+Describe "when calling Chocolatey-Nuget with empty packageName"{
+  Update-SessionEnvironment
+  Mock Write-Debug 
+
+  Chocolatey-Nuget ''
+  It "should fail for an empty package"{
+    Assert-MockCalled Write-Debug -ParameterFilter {$message -like "No package to run, aborting"}
+  }
+
+}
