@@ -11,6 +11,7 @@ Resolve-Path $helpersPath\functions\*.ps1 |
 
 Export-ModuleMember -Function `
 	Get-BinRoot,`
+        Get-ChocolateyPackageRoot,`
 	Get-ChocolateyWebFile,`
 	Get-ChocolateyUnzip,`
 	Get-ProcessorBits,`
