@@ -59,7 +59,9 @@ param(
     $url = $url32bit
   }
 
-  Write-Host "Downloading $packageName $bitPackage bit ($url) to $fileFullPath"
+  Write-Host "Downloading $packageName $bitPackage bit"
+  Write-Host "From: $url"
+  Write-Host "To:   $fileFullPath"
   #$downloader = new-object System.Net.WebClient
   #$downloader.DownloadFile($url, $fileFullPath)
   if ($url.StartsWith('http')) {
