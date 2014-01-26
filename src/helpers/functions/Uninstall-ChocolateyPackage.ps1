@@ -48,7 +48,7 @@ param(
   $overrideArguments = $env:chocolateyInstallOverride;
     
   if ($fileType -like 'msi') {
-    $msiArgs = "/x" 
+    $msiArgs = "/x `"$file`""
     if ($overrideArguments) { 
       $msiArgs = "$msiArgs $additionalInstallArgs";
       write-host "Overriding package arguments with `'$additionalInstallArgs`'";
