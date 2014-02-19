@@ -78,13 +78,15 @@ Write-Debug "Installing packages to `"$nugetLibPath`"."
 
             if ([System.IO.Directory]::Exists($packageFolder)) {
               try {
+                $beforeRegKeys = Get-UninstallerRegistryKeys
                 Delete-ExistingErrorLog $installedPackageName
                 Run-ChocolateyPS1 $packageFolder $installedPackageName "install" $installerArguments
                 Get-ChocolateyBins $packageFolder
                 if ($installedPackageName.ToLower().EndsWith('.extension')) {
                   Chocolatey-InstallExtension $packageFolder $installedPackageName
                 }
-
+                $afterRegKeys = Get-UninstallerRegistryKeys
+                Record-InstallerRegistryKeysDelta $installedPackageName $packageFolder $beforeRegKeys $afterRegKeys
               } catch {
                 Move-BadInstall $installedPackageName $installedPackageVersion $packageFolder
                 Write-Error "Package `'$installedPackageName v$installedPackageVersion`' did not install successfully: $($_.Exception.Message)"
