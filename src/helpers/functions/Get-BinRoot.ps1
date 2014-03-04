@@ -10,7 +10,7 @@ function Get-BinRoot {
   $binRoot = ''
 
   # Clean up wrongfully set C:\
-  if ($env:ChocolateyBinRoot -eq $env:systemdrive) {
+  if ($env:ChocolateyBinRoot -imatch "^\w:\\{0,1}$") {
     # Read but untested: Setting a variable = an empty string will remove it completely.
     $env:ChocolateyBinRoot = ''
   }
