@@ -9,10 +9,16 @@ function Get-BinRoot {
 
   $binRoot = ''
 
+  # Clean up wrongfully set C:\
+  if ($env:ChocolateyBinRoot -eq $env:systemdrive) {
+    # Read but untested: Setting a variable = an empty string will remove it completely.
+    $env:ChocolateyBinRoot = ''
+  }
+
   # For now, check old var first
   if ($env:ChocolateyBinRoot -eq $null) { # If no value
     if ($env:chocolatey_bin_root -eq $null) { # Try old var
-      $binRoot = join-path $env:systemdrive 'tools'
+      $env:ChocolateyBinRoot = join-path $env:systemdrive 'tools'
     }
     else {
       $env:ChocolateyBinRoot = $env:chocolatey_bin_root
