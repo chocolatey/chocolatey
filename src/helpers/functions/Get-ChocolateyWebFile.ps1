@@ -72,6 +72,9 @@ param(
     $url = $url32bit
   }
 
+  # Check for mapping of url to another
+  $url = Get-RedirectedWebFileUrl $packageName $url
+
   #$downloader = new-object System.Net.WebClient
   #$downloader.DownloadFile($url, $fileFullPath)
   $headers = @{}
