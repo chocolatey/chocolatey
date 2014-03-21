@@ -26,8 +26,8 @@ Describe "Get-RedirectedWebFileUrl with no mapping setting" {
     It "should not attempt to download the mapping CSV" {
       Assert-MockCalled Get-UTF8Content -Exactly 0
     }
-    It "should be returned unchanged" {
-      $returnValue | Should Be $urlUnknown
+    It "should not return an update" {
+      $returnValue | Should Be $null
     }
   }
 }
@@ -42,8 +42,8 @@ Describe "Get-RedirectedWebFileUrl with an example mapping defined" {
     It "should attempt to download the mapping CSV" {
       Assert-MockCalled Get-UTF8Content -Exactly 1
     }
-    It "should be returned unchanged" {
-      $returnValue | Should Be $urlUnknown
+    It "should not return an update" {
+      $returnValue | Should Be $null
     }
   }
 
@@ -54,7 +54,7 @@ Describe "Get-RedirectedWebFileUrl with an example mapping defined" {
       Assert-MockCalled Get-UTF8Content -Exactly 1
     }
     It "should be returned in the new form" {
-      $returnValue | Should Be $url1Redirected
+      $returnValue.newUrl | Should Be $url1Redirected
     }
   }
 }

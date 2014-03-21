@@ -19,6 +19,7 @@ Get-RedirectedWebFileUrl 'mycoolapp' 'http://www.coolco.com/download?app=coolapp
 
 .NOTES
 Uses the environment variable 'ChocolateyWebFileRedirecterCsv' as a source for the mapping CSV
+returns with the redirected url in the newUrl property of a PSObject, or $null if no mapping
 
 .LINK
 Get-ChocolateyWebFile
@@ -65,13 +66,13 @@ param(
           throw "Could not join $redirecterCsvLocation and $maybePartialRedirectedUrl"
         } else {
           Write-Debug "Redirecting to $redirectedUrl"
-          $url = $redirectedUrl
+          return New-Object -TypeName PSObject -Property @{newUrl=$redirectedUrl}
         }
       }
     }
   }
   
-  return $url
+  return $null
 }
 
 function Get-UTF8Content {
