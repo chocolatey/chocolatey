@@ -37,7 +37,7 @@ Adding batch files for any executables found to a location on PATH. In other wor
       }
     }
     catch {
-      #Write-Host 'There are no executables (that are not ignored) in the package.'
+      Write-Host "Error while $(if ($uninstall) {'un'})installing batch redirects: $($_) ($($_.Exception.GetType().Name))`nat $($_.InvocationInfo.PositionMessage)" -BackgroundColor $ErrorColor -ForegroundColor White
     }
 
     if (!($batchCreated)) {

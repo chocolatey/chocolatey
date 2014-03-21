@@ -30,7 +30,7 @@ param(
 		  Write-Debug "Looking for $($package).$($versions.found)"
           $packageFolder = Join-Path $nugetLibPath "$($package).$($versions.found)" 
           Write-host "Uninstalling from folder $packageFolder"
-          Invoke-ChocolateyFunction "Get-ChocolateyBins" @($packageFolder,"-uninstall")
+          Invoke-ChocolateyFunction "Get-ChocolateyBins" @{packageFolder=$packageFolder;uninstall=$true}
           Invoke-ChocolateyFunction "Run-ChocolateyPS1" @($packageFolder,$package,"uninstall")
 		  Remove-Item -Recurse -Force $packageFolder
 		}
