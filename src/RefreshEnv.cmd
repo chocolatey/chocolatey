@@ -10,7 +10,7 @@
 ::
 
 :: A strange trick to print without newline
-echo | set /p dummy="Reading environment variables from registry. Please wait... "
+rem echo | set /p dummy="Reading environment variables from registry. Please wait... "
 goto main
 
 :: Set one environment variable from registry key
@@ -57,8 +57,8 @@ goto main
     call "%TEMP%\_env.bat"
 
     :: Finish
-    echo | set /p dummy="Done"
-    echo .
+    rem echo | set /p dummy="Done"
+    rem echo .
     
 
 exit /b %ERRORLEVEL%
