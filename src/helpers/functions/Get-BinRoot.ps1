@@ -23,12 +23,20 @@ Returns the binary root. Default should IMO be C:\Chocolatey\Bin or C:\Common\Bi
 
   $binRoot = ''
 
-  # For now, check old var first
-  if ($env:ChocolateyBinRoot -eq $null) { # If no value
-    if ($env:chocolatey_bin_root -eq $null) { # Try old var
-      $env:ChocolateyBinRoot = join-path $env:systemdrive 'tools'
+  # Do we have a 2014 BinRoot?
+  if ($env:ChocolateyBinRoot -eq $null) { # No
+	# Do we have a 1995 bin_root?
+    if ($env:chocolatey_bin_root -eq $null) { # No
+      # Do we have a Chocolatey path?
+      if ($env:ChocolateyInstall -eq $null) { # No
+        # Okay, I don't know where Chocolatey is installed, so lets make `C:\Tools` the default.
+        $env:ChocolateyBinRoot = join-path $env:systemdrive 'tools'
+      }
+      else { # Use `%ChocolateyInstall%/bin` path as default
+        $env:ChocolateyBinRoot = join-path $env:ChocolateyInstall 'bin'
+      }
     }
-    else {
+    else { # Use 1995 setting. Warning: This may or may not contain a drive letter!
       $env:ChocolateyBinRoot = $env:chocolatey_bin_root
     }
   }
