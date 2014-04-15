@@ -1,4 +1,9 @@
 function Get-VirusCheckValid {
+<#
+.SYNOPSIS
+:warning: not implemented!  
+
+#>
 param(
   [string] $location,
   [string] $file = ''

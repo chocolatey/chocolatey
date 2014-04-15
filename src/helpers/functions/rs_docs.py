@@ -1,8 +1,14 @@
+#!/usr/bin/env python
+# Redsandro automatro
+# 2014-04-15
+
 import os
 import re
 
 
 docs = open('overview.md', "w+")
+
+docs.write('##Overview\n\n###Helpers in alphabetical order\n\n')
 
 for file in os.listdir('.'):
 	if file.endswith('.ps1'):
@@ -17,12 +23,12 @@ for file in os.listdir('.'):
 			data = fh.read()
 
 			# Find Synopsis
-			s = re.search('\.SYNOPSIS\n((.|\n)+?)\n*^\.\w+', data, re.MULTILINE)
+			s = re.search('\.SYNOPSIS\n((.|\n)+?)\n*^[\.\#][\w\>]+?', data, re.MULTILINE)
 			if s != None:
 				docs.write(s.group(1) + '  \n');
 
 			# Find example
-			s = re.search('\.EXAMPLE\n((.|\n)+?)\n*^\.\w+', data, re.MULTILINE)
+			s = re.search('\.EXAMPLE\n((.|\n)+?)\n*^[\.\#][\w\>]+?', data, re.MULTILINE)
 			if s != None:
 				docs.write('```powershell' + '\n');
 				docs.write(s.group(1) + '\n');
