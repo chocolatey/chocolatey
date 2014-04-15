@@ -1,13 +1,17 @@
 ﻿function Get-ProcessorBits {
 <#
 .SYNOPSIS
-Get the system architecture address width.
+Get the system architecture address width; return the system architecture address width (`32` or `64`). Optionally return `true` or `false` by specifying a width to test against.
 
 .DESCRIPTION
 This will return the system architecture address width (probably 32 or 64 bit).
 
 .PARAMETER compare
 This optional parameter causes the function to return $True or $False, depending on wether or not the bitwidth matches.
+
+.EXAMPLE
+$architecture = Get-ProcessorBits; # 64
+$is32bit = Get-ProcessorBits 32; # false
 
 .NOTES
 When your installation script has to know what architecture it is run on, this simple function comes in handy.
