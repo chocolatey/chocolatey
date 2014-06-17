@@ -29,10 +29,11 @@ param(
   $process.StartInfo.CreateNoWindow = $true  
 
   $process.Start() | Out-Null
-  $process.WaitForExit()
 
   $nugetOutput = $process.StandardOutput.ReadToEnd()
   $errors = $process.StandardError.ReadToEnd()
+
+  $process.WaitForExit()
 
   $nugetOutput | Out-File $logFile
   $errors | Out-File $errorLogFile
