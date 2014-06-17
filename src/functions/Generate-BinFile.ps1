@@ -55,7 +55,7 @@ start """" ""$path"" %*" | Out-File $packageBatchFileName -encoding ASCII
 
 "#!/bin/sh
 DIR=`${0%/*}
-""$pathBash"" ""`$*"" &" | Out-File $packageBashFileName -encoding ASCII
+""$pathBash"" ""`$@"" &" | Out-File $packageBashFileName -encoding ASCII
 
     } else {
 
@@ -66,7 +66,7 @@ exit /b %ERRORLEVEL%" | Out-File $packageBatchFileName -encoding ASCII
 
 "#!/bin/sh
 DIR=`${0%/*}
-""$pathBash"" ""`$*""
+""$pathBash"" ""`$@""
 exit `$?" | Out-File $packageBashFileName -encoding ASCII
 
     }
