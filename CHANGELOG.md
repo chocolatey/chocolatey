@@ -44,6 +44,8 @@ IMPROVEMENTS:
  * Replace ascii cue to visual cue for "installing package" - [#376](https://github.com/chocolatey/chocolatey/pull/376)
  * Clean up the verbosity of chocolatey - [#374](https://github.com/chocolatey/chocolatey/issues/374)
 
+Commits: [a32f1fc133...f15a8f3b52](https://github.com/chocolatey/chocolatey/compare/a32f1fc133...f15a8f3b52)
+
 
 # [0.9.8.23](https://github.com/chocolatey/chocolatey/issues?labels=v0.9.8.23&page=1&state=closed) (November 11, 2013)
 
