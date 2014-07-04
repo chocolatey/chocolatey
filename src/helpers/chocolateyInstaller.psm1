@@ -26,6 +26,7 @@ Export-ModuleMember -Function `
 	Install-ChocolateyExplorerMenuItem,`
 	Install-ChocolateyFileAssociation,`
 	Install-ChocolateyEnvironmentVariable,`
+	Install-ChocolateyService,`
 	Install-ChocolateyVsixPackage,`
 	Write-ChocolateySuccess,`
 	Write-ChocolateyFailure,`
