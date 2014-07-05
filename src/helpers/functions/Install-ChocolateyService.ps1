@@ -73,7 +73,7 @@ param(
   }
 
   function startService() {
-    if (serviceExist) {
+    if (serviceExist && availablePort) {
       Write-Host "$packageName service will be started"
       start-service $serviceName
     } else {
@@ -95,17 +95,23 @@ param(
     $service
   }
 
-  function serviceDelete() {
+  function deleteService() {
     if (serviceExist) {
       Write-Host "$serviceName service already exists and will be removed"
       stop-service $serviceName
       $service.delete()      
 	} else {
-
+      return $TRUE
     }	
   }
 
-
+  deleteService
+  createService
+  startService
+  
+  
+  
+  
   
   
   
