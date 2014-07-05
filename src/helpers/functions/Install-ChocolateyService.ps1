@@ -63,18 +63,30 @@ param(
   function installService() {
     if (serviceExists) {
       Write-Host "$packageName service will be installed"
+	  
       & $createServiceCommand install $serviceName
+	  
+	  
+    } else {
+      Write-ChocolateyFailure 'Install-ChocolateyService' "service $serviceName cannot be installed"
+      throw
     }
   }
 
   function startService() {
-    if (portAvailable) {
-      Write-Host "Apache Tomcat service will be started"
-      start-service $serviceName
-    } else {
-      Write-ChocolateyFailure 'Apache Tomcat' "port $port is unavailable"
-      throw
-    }
+#    if (portAvailable) {
+#      Write-Host "$packageName service will be started"
+	  $service6 = Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'"
+  if ($service6 -match "$serviceName") {
+        #start-service $serviceName
+  } else {
+    Write-ChocolateyFailure "Install-ChocolateyService" "service $serviceName does not exist."
+    return
+  }
+ #   } else {
+  #    Write-ChocolateyFailure 'Install-ChocolateyService' "service $serviceName cannot be started"
+   #   throw
+    #}
   }
 
   function portAvailable() {
@@ -100,7 +112,8 @@ param(
     }
   }  
 
-  installService
+ # installService
 
   startService
+  
 }
