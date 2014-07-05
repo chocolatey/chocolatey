@@ -45,17 +45,32 @@ Describe "Install-ChocolateyService" {
 		}
 	}	
 	
-	Context "When createService parameter is incorrect" {
+#	Context "When service does not exist" {
+#		Mock Write-ChocolateyFailure
+		
+#		Install-ChocolateyService -packageName "helloworld" -serviceName "helloworld"  -createServiceCommand "c:\helloworld" -availablePort "135"
+		
+#		It "should return an error" {
+#			Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "service helloworld does not exist."
+#           #Write-host $failureMessage
+#			}
+#		}
+#	}	
+	
+	Context "When createServiceCommand is incorrect" {
 		Mock Write-ChocolateyFailure
 		
 		Install-ChocolateyService -packageName "helloworld" -serviceName "helloworld"  -createServiceCommand "c:\helloworld" -availablePort "135"
 		
 		It "should return an error" {
-			Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "service helloworld does not exist."
-Write-host $failureMessage
+			Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "createServiceCommand c:\helloworld is incorrect."
+#            Write-host $failureMessage
 			}
 		}
 	}	
+	
+	
+	
 	
 	
 	
