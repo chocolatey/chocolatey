@@ -35,15 +35,15 @@ Describe "Install-ChocolateyService" {
 		}
 	}
 
-	Context "When no availablePort parameter is passed to this function" {
-		Mock Write-ChocolateyFailure
+#	Context "When no availablePort parameter is passed to this function" {
+#		Mock Write-ChocolateyFailure
 		
-		Install-ChocolateyService -packageName "TestTargetPath" -serviceName "TestWorkingDiectory" -createServiceCommand "TestArguments"
+#		Install-ChocolateyService -packageName "TestTargetPath" -serviceName "TestWorkingDiectory" -createServiceCommand "TestArguments"
 		
-		It "should return an error" {
-			Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing AvailablePort input parameter." }
-		}
-	}	
+#		It "should return an error" {
+#			Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing AvailablePort input parameter." }
+#		}
+#	}	
 	
 #	Context "When service does not exist" {
 #		Mock Write-ChocolateyFailure

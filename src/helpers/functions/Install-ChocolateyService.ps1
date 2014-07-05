@@ -55,10 +55,10 @@ param(
     return
   }  
   
-  if(!$availablePort) {
-    Write-ChocolateyFailure "Install-ChocolateyService" "Missing AvailablePort input parameter."
-    return
-  }    
+#  if(!$availablePort) {
+#    Write-ChocolateyFailure "Install-ChocolateyService" "Missing AvailablePort input parameter."
+#    return
+#  }    
 
   $service = Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'"
   
@@ -73,7 +73,8 @@ param(
   }
 
   function startService() {
-    if (serviceExist && availablePort) {
+#    if (serviceExist -and availablePort) {
+    if (serviceExist) {
       Write-Host "$packageName service will be started"
       start-service $serviceName
     } else {
@@ -83,12 +84,15 @@ param(
   }
   
   function availablePort() {
-    $listeningStatePort = Get-NetTCPConnection -State Listen | Where-Object {$_.LocalAddress -eq "0.0.0.0" -and $_.LocalPort -eq "$availablePort"}
-    if (!$listeningStatePort) {
-      "$availablePort is AVAILABLE"
-    } else {
-      "$availablePort is in LISTENING state"
-    }
+    if($availablePort) {
+      $listeningStatePort = Get-NetTCPConnection -State Listen | Where-Object {$_.LocalAddress -eq "0.0.0.0" -and $_.LocalPort -eq "$availablePort"}
+      if (!$listeningStatePort) {
+        return $TRUE
+      } else {
+        Write-ChocolateyFailure "Install-ChocolateyService" "$availablePort is in LISTENING state and not available."
+        return
+      }
+	}
   }
 
   function serviceExist() {
