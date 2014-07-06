@@ -26,7 +26,6 @@ Export-ModuleMember -Function `
 	Install-ChocolateyExplorerMenuItem,`
 	Install-ChocolateyFileAssociation,`
 	Install-ChocolateyEnvironmentVariable,`
-	Install-ChocolateyService,`
 	Install-ChocolateyVsixPackage,`
 	Write-ChocolateySuccess,`
 	Write-ChocolateyFailure,`
@@ -37,4 +36,5 @@ Export-ModuleMember -Function `
 	Update-SessionEnvironment,`
 	Get-EnvironmentVariableNames,`
 	Get-EnvironmentVariable,`
-	Set-EnvironmentVariable
+	Set-EnvironmentVariable,`
+	Install-ChocolateyService
