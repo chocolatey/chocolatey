@@ -3,12 +3,56 @@ $common = Join-Path (Split-Path -Parent $here)  '_Common.ps1'
 $base = Split-Path -parent (Split-Path -Parent $here)
 . $common
 . "$base\src\helpers\functions\Install-ChocolateyService.ps1"
+. "$base\src\helpers\functions\Get-ServiceExistence.ps1"
+. "$base\src\helpers\functions\Get-ServiceStatus.ps1"
+. "$base\tests\unit\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
+
+$availablePort = "135"
+$correctServiceName = "installServiceTest"
+$unavailableServiceName = "unavailableServiceName"
+$testDirectory = "C:\installChocolateyServiceTest"
 
 Describe "Install-ChocolateyService" {
+  Context "When provided parameters are correct the service should be created and started" {	
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory"
+		
+	It "service creation should succeed" {
+      Get-ServiceExistence -serviceName "$correctServiceName" | should Be $true
+    }
+
+	It "service start should succeed" {
+      Get-ServiceStatus -serviceName "$correctServiceName" -eq "running" | should Be $true
+    }
+  }
+
+  Context "When provided parameters are correct and service exist it should be removed, subsequently created and started" {	
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory"
+
+	It "service creation should succeed after deletion of previous service" {
+      Get-ServiceExistence -serviceName "$correctServiceName" | should Be $true
+    }
+
+	It "service start should succeed after deletion of previous service" {
+      Get-ServiceStatus -serviceName "$correctServiceName" -eq "running" | should Be $true
+    }
+  }  
+ 
+  Context "When availablePort parameter is passed to this function and it is in LISTENING state and not available" {
+    Mock Write-ChocolateyFailure
+
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$availablePort"
+	
+	It "should return an error" {
+      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$availablePort is in LISTENING state and not available." 
+	  Write-Host $failureMessage
+	  }
+    }
+  }
+
   Context "When no packageName parameter is passed to this function" {
     Mock Write-ChocolateyFailure
 	
-	Install-ChocolateyService -serviceName "TestWorkingDiectory" -createServiceCommand "TestArguments"	
+	Install-ChocolateyService -serviceName "$unavailableServiceName" -createServiceCommand "$unavailableServiceName"
 
 	It "should return an error" {
 	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing PackageName input parameter." }
@@ -18,7 +62,7 @@ Describe "Install-ChocolateyService" {
   Context "When no serviceName parameter is passed to this function" {
 	Mock Write-ChocolateyFailure
 		
-	Install-ChocolateyService -packageName "TestTargetPath" -createServiceCommand "TestArguments"
+	Install-ChocolateyService -packageName "$unavailableServiceName" -createServiceCommand "$unavailableServiceName"
 		
 	It "should return an error" {
 	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing ServiceName input parameter." }
@@ -28,7 +72,7 @@ Describe "Install-ChocolateyService" {
   Context "When no createServiceCommand parameter is passed to this function" {
     Mock Write-ChocolateyFailure
 		
-	Install-ChocolateyService -packageName "TestTargetPath" -serviceName "TestWorkingDiectory"
+	Install-ChocolateyService -packageName "$unavailableServiceName" -serviceName "$unavailableServiceName"
 		
 	It "should return an error" {
 	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing CreateServiceCommand input parameter." }
@@ -37,21 +81,28 @@ Describe "Install-ChocolateyService" {
 	
   Context "When service does not exist" {
     Mock Write-ChocolateyFailure
-		
-	Install-ChocolateyService -packageName "helloworld" -serviceName "helloworld"  -createServiceCommand "notepad"
-		
+	
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -serviceName "$unavailableServiceName"
+
 	It "should return an error" {
-	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "service helloworld does not exist." }
+	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "service unavailableServiceName does not exist." }
 	}
   }	
-	
+
   Context "When createServiceCommand is incorrect" {
     Mock Write-ChocolateyFailure
-		
-	Install-ChocolateyService -packageName "helloworld" -serviceName "helloworld"  -createServiceCommand "c:\helloworld"
+	
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -createServiceCommand "$unavailableServiceName"
 		
 	It "should return an error" {
-	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "createServiceCommand c:\helloworld is incorrect." }
+	  Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "The createServiceCommand is incorrect: 'The term 'unavailableServiceName' is not recognized as the name of a cmdlet, function, script file, or operable program. Check the spelling of the name, or if a path was included, verify that the path is correct and try again.'." }
 	}
+  }
+
+  Write-Host "Remove test directory after finishing testing"
+  Delete-Service -serviceName "$serviceName"
+
+  if (Test-Path $testDirectory) {
+    Remove-Item -Recurse -Force $testDirectory
   }
 }
