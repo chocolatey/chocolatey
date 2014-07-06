@@ -37,4 +37,7 @@ Export-ModuleMember -Function `
 	Get-EnvironmentVariableNames,`
 	Get-EnvironmentVariable,`
 	Set-EnvironmentVariable,`
-	Install-ChocolateyService
+	Install-ChocolateyService,`
+	Get-ServiceExistence,`
+	Get-ServiceStatus,`
+	Delete-Service
