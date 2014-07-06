@@ -22,22 +22,17 @@ param(
     return
   }  
 
-  $service = Get-WmiObject -Class Win32_Service -Filter "Name='$serviceName'"
-
   try {
-    if ($service) {
-      Write-Host "$serviceName service already exists and will be removed"
-      stop-service $serviceName
-      $service.delete()      
-    }
+    Delete-Service -serviceName "$serviceName"
   
-    if (get-command $createServiceCommand -erroraction silentlycontinue) {
+    try {
       Write-Host "$packageName service will be installed"
-      & $createServiceCommand install $serviceName
-    } else {
-      Write-ChocolateyFailure 'Install-ChocolateyService' "createServiceCommand $createServiceCommand is incorrect."
-      return  
-    }  
+	  Write-Host $createServiceCommand
+      iex $createServiceCommand
+    } catch {
+      Write-ChocolateyFailure "Install-ChocolateyService" "The createServiceCommand is incorrect: '$_'."
+	  return
+    }
 
     if($availablePort) {
       $listeningStatePort = Get-NetTCPConnection -State Listen | Where-Object {$_.LocalAddress -eq "0.0.0.0" -and $_.LocalPort -eq "$availablePort"}
@@ -49,9 +44,20 @@ param(
       }
 	}	
 	
-    if ($service) {
+    if (Get-ServiceExistence -serviceName "$serviceName") {
       Write-Host "$packageName service will be started"
-      start-service $serviceName
+	  
+	  for ($i=0;$i -lt 12; $i++) {
+	    $serviceStatus = Get-Service -Name $serviceName
+		
+		start-service $serviceName
+        
+		if ($serviceStatus.Status -eq "running") {
+		  Write-Host "$packageName service has been started"
+		  return
+		}
+		Start-Sleep -s 5
+      }
     } else {
       Write-ChocolateyFailure "Install-ChocolateyService" "service $serviceName does not exist."
       return
