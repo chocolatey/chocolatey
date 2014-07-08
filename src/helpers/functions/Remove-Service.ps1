@@ -1,4 +1,4 @@
-function Delete-Service {
+function Remove-Service {
 param(
   [string] $serviceName = ''
 )

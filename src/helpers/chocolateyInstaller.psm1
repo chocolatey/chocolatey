@@ -40,4 +40,4 @@ Export-ModuleMember -Function `
 	Install-ChocolateyService,`
 	Get-ServiceExistence,`
 	Get-ServiceStatus,`
-	Delete-Service
+	Remove-Service

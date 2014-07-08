@@ -23,7 +23,7 @@ param(
   }  
 
   try {
-    Delete-Service -serviceName "$serviceName"
+    Remove-Service -serviceName "$serviceName"
   
     try {
       Write-Host "$packageName service will be installed"
