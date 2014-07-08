@@ -5,7 +5,7 @@ param(
   [string] $createServiceCommand,
   [int] $availablePort
 )
-  Write-Debug "Running 'Install-ChocolateyService' for $packageName with url:`'$url`', unzipLocation: `'$unzipLocation`', url64bit: `'$url64bit`', specificFolder: `'$specificFolder`', checksum: `'$checksum`', checksumType: `'$checksumType`', checksum64: `'$checksum64`', checksumType64: `'$checksumType64`' ";
+  Write-Debug "Running 'Install-ChocolateyService' for $packageName with serviceName:`'$serviceName`', createServiceCommand: `'$createServiceCommand`', availablePort: `'$availablePort`' ";
 
   if(!$packageName) {
     Write-ChocolateyFailure "Install-ChocolateyService" "Missing PackageName input parameter."
