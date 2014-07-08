@@ -1,4 +1,4 @@
-function Remove-Service {
+function Uninstall-ChocolateyService {
 param(
   [string] $serviceName = ''
 )

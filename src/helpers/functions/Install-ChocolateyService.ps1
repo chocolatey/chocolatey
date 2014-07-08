@@ -29,8 +29,8 @@ This helper reduces the number of lines one would have to write to install a ser
 This method has error handling built into it.
 
 .LINK
-Get-ChocolateyWebFile
-Get-ChocolateyUnzip
+Uninstall-ChocolateyService
+Get-ServiceExistence
 #>
 param(
   [string] $packageName,
@@ -56,7 +56,7 @@ param(
   }  
 
   try {
-    Remove-Service -serviceName "$serviceName"
+    Uninstall-ChocolateyService -serviceName "$serviceName"
   
     try {
       Write-Host "$packageName service will be installed"

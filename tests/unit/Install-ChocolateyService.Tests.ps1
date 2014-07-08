@@ -100,7 +100,7 @@ Describe "Install-ChocolateyService" {
   }
 
   Write-Host "Remove test directory after finishing testing"
-  Remove-Service -serviceName "$serviceName"
+  Uninstall-ChocolateyService -serviceName "$serviceName"
 
   if (Test-Path $testDirectory) {
     Remove-Item -Recurse -Force $testDirectory
