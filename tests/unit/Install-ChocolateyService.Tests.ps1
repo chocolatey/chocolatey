@@ -1,11 +1,14 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $common = Join-Path (Split-Path -Parent $here)  '_Common.ps1'
 $base = Split-Path -parent (Split-Path -Parent $here)
+$functionBase = "$base\src\helpers\functions"
+$testUnitBase = "$base\tests\unit"
 . $common
-. "$base\src\helpers\functions\Install-ChocolateyService.ps1"
-. "$base\src\helpers\functions\Get-ServiceExistence.ps1"
-. "$base\src\helpers\functions\Get-ServiceStatus.ps1"
-. "$base\tests\unit\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
+. "$functionBase\Install-ChocolateyService.ps1"
+. "$functionBase\Get-ServiceExistence.ps1"
+. "$functionBase\Get-ServiceStatus.ps1"
+. "$testUnitBase\Delete-ChocolateyTestDirectory.ps1"
+. "$testUnitBase\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
 
 $availablePort = "135"
 $correctServiceName = "installServiceTest"
@@ -43,9 +46,7 @@ Describe "Install-ChocolateyService" {
 	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$availablePort"
 	
 	It "should return an error" {
-      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$availablePort is in LISTENING state and not available." 
-	  Write-Host $failureMessage
-	  }
+      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$availablePort is in LISTENING state and not available." }
     }
   }
 
@@ -99,10 +100,7 @@ Describe "Install-ChocolateyService" {
 	}
   }
 
-  Write-Host "Remove test directory after finishing testing"
   Uninstall-ChocolateyService -serviceName "$serviceName"
 
-  if (Test-Path $testDirectory) {
-    Remove-Item -Recurse -Force $testDirectory
-  }
+  Delete-ChocolateyTestDirectory "$testDirectory"
 }
