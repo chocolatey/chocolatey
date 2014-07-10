@@ -7,7 +7,16 @@ $base = Split-Path -parent (Split-Path -Parent $here)
 
 $packageName = "test"
 $testDirectory = "C:\installChocolateyArchivePackage"
-$url = "https://github.com/030/chocolatey-1/blob/c82307f02755a529f60fe19a9fbc3fbee076bf05/tests/Install-ChocolateyArchivePackageFiles/Install-ChocolateyArchivePackageFiles.tar.gz"
+#$url = "https://github.com/030/chocolatey-1/blob/c82307f02755a529f60fe19a9fbc3fbee076bf05/tests/Install-ChocolateyArchivePackageFiles/Install-ChocolateyArchivePackageFiles"
+#$urlTarGz = "$url.tar.gz"
+#$urlZip = "$url.zip"
+
+$urlZip = "http://apache.mirror1.spango.com/tomcat/tomcat-8/v8.0.9/bin/apache-tomcat-8.0.9-windows-x64.zip"
+
+
+$env:chocolateyPackageFolder = "c:\Chocolatey\lib"
+$env:ChocolateyInstall = "c:\Chocolatey"
+
 
 Describe "Install-ChocolateyArchivePackage" {
   Context "When no packageName parameter is passed to this function" {
@@ -38,5 +47,17 @@ Describe "Install-ChocolateyArchivePackage" {
 	It "should return an error" {
       Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Missing UnzipLocation input parameter." }
     }
-  }
+  }  
+
+  Context "When no packageName parameter is passed to this function" {
+    Mock Write-ChocolateyFailure
+
+	Install-ChocolateyArchivePackage -packageName "$packageName" -url "$urlZip" -unzipLocation "$testDirectory"
+	
+	It "should return an error" {
+      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$availablePort is in LISTENING state and not available." 
+	  Write-Host $failureMessage
+	  }
+    }
+  }  
 }
