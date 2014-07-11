@@ -44,6 +44,21 @@ param(
   [string] $checksum64 = '',
   [string] $checksumType64 = ''
 )
+  if(!$packageName) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing PackageName input parameter."
+    return
+  }
+  
+  if(!$url) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing Url input parameter."
+    return
+  }
+
+  if(!$unzipLocation) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing UnzipLocation input parameter."
+    return
+  }
+
   Write-Debug "Running 'Install-ChocolateyZipPackage' for $packageName with url:`'$url`', unzipLocation: `'$unzipLocation`', url64bit: `'$url64bit`', specificFolder: `'$specificFolder`', checksum: `'$checksum`', checksumType: `'$checksumType`', checksum64: `'$checksum64`', checksumType64: `'$checksumType64`' ";
 
   try {
@@ -63,3 +78,5 @@ param(
     throw
   }
 }
+
+set-alias Install-ChocolateyArchivePackage Install-ChocolateyZipPackage
