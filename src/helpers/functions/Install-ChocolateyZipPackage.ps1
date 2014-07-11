@@ -63,3 +63,5 @@ param(
     throw
   }
 }
+
+set-alias Install-ChocolateyArchivePackage Install-ChocolateyZipPackage
