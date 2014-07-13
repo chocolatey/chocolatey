@@ -40,7 +40,7 @@ Export-ModuleMember -Function `
 	Get-ServiceExistence,`
 	Get-ServiceStatus,`
 	Uninstall-ChocolateyService,`
-	Delete-ChocolateyDirectory
+	Remove-ChocolateyDirectory
 
 Export-ModuleMember -Function `
     Install-ChocolateyZipPackage -alias `

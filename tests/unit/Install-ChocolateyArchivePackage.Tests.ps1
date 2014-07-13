@@ -4,7 +4,7 @@ $base = Split-Path -parent (Split-Path -Parent $here)
 . $common
 $helperFunctionBase = "$base\src\helpers\functions"
 . "$helperFunctionBase\Install-ChocolateyZipPackage.ps1"
-. "$helperFunctionBase\Delete-ChocolateyDirectory.ps1"
+. "$helperFunctionBase\Remove-ChocolateyDirectory.ps1"
 
 $packageName = "test"
 $testDirectory = "C:\installChocolateyArchivePackage"
@@ -72,5 +72,5 @@ Describe "Install-ChocolateyArchivePackage" {
       Test-Path $testTarGzDirectory\$packageName | should Be $true
     }
   }
-  Delete-ChocolateyDirectory "$testDirectory"
+  Remove-ChocolateyDirectory "$testDirectory"
 }

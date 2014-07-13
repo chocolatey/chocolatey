@@ -1,4 +1,4 @@
-function Delete-ChocolateyDirectory {
+function Remove-ChocolateyDirectory {
 param(
   [string] $directory
 )
