@@ -3,7 +3,6 @@
 $DebugPreference = "SilentlyContinue"
 if ($env:ChocolateyEnvironmentDebug -eq 'true') {$DebugPreference = "Continue";}
 
-
 # grab functions from files
 Resolve-Path $helpersPath\functions\*.ps1 |
     ? { -not ($_.ProviderPath.Contains(".Tests.")) } |
@@ -40,4 +39,8 @@ Export-ModuleMember -Function `
 	Install-ChocolateyService,`
 	Get-ServiceExistence,`
 	Get-ServiceStatus,`
-	Uninstall-ChocolateyService
+	Uninstall-ChocolateyService 
+
+Export-ModuleMember -Function `
+    Install-ChocolateyZipPackage -alias `
+	Install-ChocolateyArchivePackage
