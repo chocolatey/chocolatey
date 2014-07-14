@@ -1,10 +1,11 @@
 $here = Split-Path -Parent $MyInvocation.MyCommand.Definition
 $common = Join-Path (Split-Path -Parent $here)  '_Common.ps1'
 $base = Split-Path -parent (Split-Path -Parent $here)
+$baseFunctions = "$base\src\helpers\functions"
 . $common
-. "$base\src\helpers\functions\Install-ChocolateyService.ps1"
-. "$base\src\helpers\functions\Get-ServiceExistence.ps1"
-. "$base\src\helpers\functions\Get-ServiceStatus.ps1"
+. "$baseFunctions\Install-ChocolateyService.ps1"
+. "$baseFunctions\Get-ServiceExistence.ps1"
+. "$baseFunctions\Get-ServiceStatus.ps1"
 . "$base\tests\unit\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
 
 $availablePort = "135"
@@ -99,10 +100,7 @@ Describe "Install-ChocolateyService" {
 	}
   }
 
-  Write-Host "Remove test directory after finishing testing"
   Uninstall-ChocolateyService -serviceName "$serviceName"
 
-  if (Test-Path $testDirectory) {
-    Remove-Item -Recurse -Force $testDirectory
-  }
+  Remove-ChocolateyDirectory "$testDirectory"
 }

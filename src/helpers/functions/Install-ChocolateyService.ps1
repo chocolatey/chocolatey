@@ -20,6 +20,10 @@ The port which needs to be available in order to start the service.
 
 .EXAMPLE
 Install-ChocolateyService 'PACKAGE_NAME' 'SERVICE_NAME' 'INSTALL_COMMAND' 'PORT'
+Install-ChocolateyService "dcm4chee" "DCM4CHEE" "nssm install DCM4CHEE `"java`" -jar `"%DCM4CHEE_HOME%/bin/run.jar"`" "8090"
+Install-ChocolateyService "postgresqlzip" "PostgreSQL" "pg_ctl register -N `"PostgreSQL`" -U `"LocalSystem`" -w" "5432"
+Install-ChocolateyService "apacheds" "ApacheDS" "nssm install ApacheDS `"java`" -jar `"%APACHEDS_HOME%/lib/apacheds-service-${version}.jar`" `"%APACHEDS_HOME%/instances/default`"" "10389"
+Install-ChocolateyService "test" "test" "nssm install test `"$testDirectory\testService.bat`""
 
 .OUTPUTS
 None
