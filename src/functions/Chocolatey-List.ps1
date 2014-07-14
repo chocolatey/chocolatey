@@ -9,6 +9,9 @@ param(
   if ($source -like 'webpi') {
     $chocoInstallLog = Join-Path $nugetChocolateyPath 'chocolateyWebPIList.log';
     $webpiArgs ="/c webpicmd /List /ListOption:All"
+    if ($localonly) {
+        $webpiArgs ="/c webpicmd /List /ListOption:Installed"
+    }
     Start-ChocolateyProcessAsAdmin "cmd.exe $webpiArgs | Tee-Object -FilePath `'$chocoInstallLog`';" -nosleep
     Create-InstallLogIfNotExists $chocoInstallLog
     $installOutput = Get-Content $chocoInstallLog -Encoding Ascii
