@@ -72,6 +72,12 @@ param(
     $url = $url32bit
   }
 
+  # Check for mapping of url to another
+  $returnObject = Get-MappedChocolateyUrl $packageName $url
+  if ($returnObject -and $returnObject.newUrl) {
+    $url = $returnObject.newUrl
+  }
+
   #$downloader = new-object System.Net.WebClient
   #$downloader.DownloadFile($url, $fileFullPath)
   $headers = @{}
@@ -129,4 +135,38 @@ param(
   # $url is already set properly to the used location.
   #Write-Debug "Verifying downloaded file is not known to contain viruses. FilePath: `'$fileFullPath`'."
   #Get-VirusCheckValid -location $url -file $fileFullPath
+}
+
+<#
+.SYNOPSIS
+Extension point for url logging/re-mapping code
+
+.PARAMETER packageName
+The name of the package we want to download - this is arbitrary, call it whatever you want.
+It's recommended you call it the same as your nuget package id.
+
+.PARAMETER url
+This is the url to be redirected/logged/whatever.
+
+.NOTES
+If changing the url, it should return the updated value in the newUrl property of a PSObject, or $null if no update
+#>
+function Get-MappedChocolateyUrl {
+param(
+  [string] $packageName,
+  [string] $url
+)
+  $returnObject = $null
+
+  if (Get-Command Get-UserChocolateyWebFileUrl -errorAction SilentlyContinue)
+  {
+    Write-Debug "Running Get-UserChocolateyWebFileUrl extension..."
+    $returnObject = Get-UserChocolateyWebFileUrl $packageName $url
+  }
+
+  if (!$returnObject) {
+    $returnObject = Get-RedirectedWebFileUrl $packageName $url
+  }
+
+  return $returnObject
 }
