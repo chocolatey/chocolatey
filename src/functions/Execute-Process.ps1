@@ -4,6 +4,7 @@ param(
   [string] $arguments = '',
   [switch] $returnOutput = $false,
   [switch] $returnErrors = $false,
+  [switch] $createNoWindow = $false,
   [switch] $windowStyleHidden = $false
 )
     Write-Debug "Calling `'$exe`' $arguments"
@@ -13,6 +14,9 @@ param(
     $process = New-Object System.Diagnostics.Process
     $process.StartInfo = New-Object System.Diagnostics.ProcessStartInfo($exe, $arguments)
     $process.StartInfo.UseShellExecute = $false
+    if($createNoWindow) {
+        $process.StartInfo.CreateNoWindow = $true
+    }
     if($windowStyleHidden) {
         $process.StartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
     }
@@ -87,6 +91,9 @@ param(
         }
 
         if ($global:errors -ne $null) {$global:errors = [string]::Join("",$global:errors)}
+
+        if ($global:output -eq "") {$global:output = $null}
+        if ($global:errors -eq "") {$global:errors = $null}
     } else {
         Write-Debug "Capturing neither output nor errors"
         $process.Start() | Out-Null

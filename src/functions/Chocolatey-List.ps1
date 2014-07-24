@@ -72,11 +72,19 @@ param(
 
     $result = Execute-Process $nugetExe $params -returnOutput:$returnOutput -returnErrors:$returnOutput
 
-    if (-not $result.output.IsNullOrEmpty) {
+    if ($result.output -ne $null) {
         $lines = ($result.output -split "\r\n")
         foreach ($line in $lines) {
             $package = $line.Split(" ")
             $packageList.Add("$($package[0])","$($package[1])")
+        }
+    }
+
+    if ($result.errors -ne $null) {
+        $lines = ($result.errors -split "\r\n")
+        foreach ($line in $lines) {
+            # do not stop execution, but pass the output back to the user.
+            Write-Host "[ERROR] $line" -ForegroundColor $ErrorColor -BackgroundColor Black
         }
     }
 

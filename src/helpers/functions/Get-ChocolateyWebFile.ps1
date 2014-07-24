@@ -113,7 +113,7 @@ param(
   if ($headers.Count -ne 0) {
     # validate length is what we expected
     Write-Debug "Checking that `'$fileFullPath`' is the size we expect it to be."
-    if ($fi.Length -ne $headers["Content-Length"])  { throw "Chocolatey expected a file at `'$fileFullPath`' to be of length `'$($headers["Content-Length"])`' but the length was `'$($fi.Length)`'." }
+    if ($headers.ContainsKey("Content-Length") -and ($fi.Length -ne $headers["Content-Length"]))  { throw "Chocolatey expected a file at `'$fileFullPath`' to be of length `'$($headers["Content-Length"])`' but the length was `'$($fi.Length)`'." }
 
     if ($headers.ContainsKey("X-Checksum-Sha1")) {
       $remoteChecksum = $headers["X-Checksum-Sha1"]
@@ -125,7 +125,8 @@ param(
   Write-Debug "Verifying package provided checksum of `'$checksum`' for `'$fileFullPath`'."
   Get-CheckSumValid -file $fileFullPath -checkSum $checksum -checksumType $checksumType
 
+  # Virus check is not able to be performed, must note that.
   # $url is already set properly to the used location.
-  Write-Debug "Verifying downloaded file is not known to contain viruses. FilePath: `'$fileFullPath`'."
-  Get-VirusCheckValid -location $url -file $fileFullPath
+  #Write-Debug "Verifying downloaded file is not known to contain viruses. FilePath: `'$fileFullPath`'."
+  #Get-VirusCheckValid -location $url -file $fileFullPath
 }

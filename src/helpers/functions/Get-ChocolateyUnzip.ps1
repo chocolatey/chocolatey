@@ -58,8 +58,9 @@ param(
   Write-Host "Extracting $fileFullPath to $destination..."
   if (![System.IO.Directory]::Exists($destination)) {[System.IO.Directory]::CreateDirectory($destination)}
 
+  Update-SessionEnvironment
   # On first install, env:ChocolateyInstall might be null still - join-path has issues
-  $7zip = Join-Path "$env:SystemDrive" 'chocolatey\chocolateyinstall\tools\7za.exe'
+  $7zip = Join-Path "$env:ALLUSERSPROFILE" 'chocolatey\chocolateyinstall\tools\7za.exe'
   if ($env:ChocolateyInstall){
     $7zip = Join-Path "$env:ChocolateyInstall" 'chocolateyinstall\tools\7za.exe'
   }
@@ -78,8 +79,11 @@ param(
   $exitCode = -1
   $unzipOps = {
     param($7zip, $destination, $fileFullPath, [ref]$exitCodeRef)
-    $p = Start-Process $7zip -ArgumentList "x -o`"$destination`" -y `"$fileFullPath`"" -Wait -WindowStyle Hidden -PassThru
-    $exitCodeRef.Value = $p.ExitCode
+    $process = Start-Process $7zip -ArgumentList "x -o`"$destination`" -y `"$fileFullPath`"" -Wait -WindowStyle Hidden -PassThru
+    # this is here for specific cases in Posh v3 where -Wait is not honored
+    try { if (!($process.HasExited)) { Wait-Process $process } } catch { }
+
+    $exitCodeRef.Value = $process.ExitCode
   }
 
   if ($zipExtractLogFullPath) {

@@ -31,7 +31,7 @@ if ($PSBoundParameters['Verbose']) {
 }
 
 # chocolatey
-# Copyright (c) 2011-Present Rob Reynolds
+# Copyright (c) 2011-Present Rob Reynolds & RealDimensions Software, LLC
 # Committers and Contributors: Rob Reynolds, Rich Siegel, Matt Wrock, Anthony Mastrean, Alan Stevens, Gary Ewan Park
 # Crediting contributions by Chris Ortman, Nekresh, Staxmanade, Chrissie1, AnthonyMastrean, Rich Siegel, Matt Wrock and other contributors from the community.
 # Big thanks to Keith Dahlby for all the powershell help!
@@ -44,7 +44,7 @@ $currentThread.CurrentCulture = $culture;
 $currentThread.CurrentUICulture = $culture;
 
 #Let's get Chocolatey!
-$chocVer = '0.9.8.24-beta2'
+$chocVer = '0.9.8.27'
 $nugetChocolateyPath = (Split-Path -parent $MyInvocation.MyCommand.Definition)
 $nugetPath = (Split-Path -Parent $nugetChocolateyPath)
 $nugetExePath = Join-Path $nuGetPath 'bin'
@@ -80,6 +80,20 @@ if ($quiet) {
   $env:ChocolateyEnvironmentQuiet = 'true'
 }
 
+# check permission of process and issue warning - we can't use
+# Test-ProcessAdminRights b/c it would use overridden Write-Debug/Write-Host
+# which may log into a folder the user doesn't have access to write to.
+$currentPrincipal = New-Object Security.Principal.WindowsPrincipal([Security.Principal.WindowsIdentity]::GetCurrent([Security.Principal.TokenAccessLevels]'Query,Duplicate'))
+if (!($currentPrincipal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator))) {
+@"
+Chocolatey detected you are not running from an elevated command shell
+  (cmd/powershell). You may experience errors - many functions/packages
+  require admin rights. Only advanced users should run choco w/out an
+  elevated shell (and very advanced users as non-admin). When you open
+  the command shell, you should ensure "Run as Administrator".
+"@ | Write-Host  -ForegroundColor $Warning -BackgroundColor Black
+}
+
 $installModule = Join-Path $nugetChocolateyPath (Join-Path 'helpers' 'chocolateyInstaller.psm1')
 Import-Module $installModule
 
@@ -93,6 +107,19 @@ if(Test-Path($extensionsPath)) {
   Write-Debug 'Loading community extensions'
   #Resolve-Path $extensionsPath\**\*\*.psm1 | % { Write-Debug "Importing `'$_`'"; Import-Module $_.ProviderPath }
   Get-ChildItem $extensionsPath -recurse -filter "*.psm1" | Select -ExpandProperty FullName | % { Write-Debug "Importing `'$_`'"; Import-Module $_; }
+}
+
+# issue deprecation Warning
+if ($nugetPath -eq (Join-Path $env:SystemDrive 'chocolatey')) {
+  $programData = [Environment]::GetFolderPath("CommonApplicationData")
+  $newChocoPath = Join-Path "$programData" 'chocolatey'
+@"
+The default install location has been changed to '$newChocoPath'.
+  This install will be updated to that location in the next version. It
+  is strongly suggested you move this installation to the new location
+  as soon as possible to limit write access from all users. Do not forget
+  to update PATH & $chocInstallVariableName environment variables.
+"@ | Write-Host  -ForegroundColor $Warning -BackgroundColor Black
 }
 
 # Win2003/XP do not support SNI
@@ -129,10 +156,17 @@ $packageParameters = $packageParameters.Replace("'","""")
 #main entry point
 Append-Log
 
-Write-Debug "Arguments: `$command = '$command'|`$packageNames='$packageNames'|`$source='$source'|`$version='$version'|`$allVersions=$allVersions|`$InstallArguments='$installArguments'|`$overrideArguments=$overrideArgs|`$force=$force|`$prerelease=$prerelease|`$localonly=$localonly|`$verbosity=$verbosity|`$debug=$debug|`$quiet=$quiet|`$name='$name'|`$ignoreDependencies=$ignoreDependencies|`$forceX86=$forceX86|`$packageParameters='$packageParameters'|PowerShellVersion=$($host.version)"
+Write-Debug "Arguments: `$command = '$command'|`$force=$force`
+|`$prerelease=$prerelease|`$packageNames='$packageNames'`
+|`$source='$source'`
+|`$version='$version'|`$allVersions=$allVersions`
+|`$overrideArguments=$overrideArgs|`$InstallArguments='$installArguments'`
+|`$localonly=$localonly|`$verbosity=$verbosity|`$debug=$debug|`$quiet=$quiet`
+|`$name='$name'|`$ignoreDependencies=$ignoreDependencies|`$forceX86=$forceX86`
+|`$packageParameters='$packageParameters'`
+|PowerShellVersion=$($host.version)|OSVersion=$([System.Environment]::OSVersion.Version.ToString())"
 
 # run level environment variables
-
 $env:chocolateyForceX86 = $null
 if ($forceX86) {
   $env:chocolateyForceX86 = $true

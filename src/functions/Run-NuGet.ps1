@@ -9,7 +9,7 @@ param(
 
   $srcArgs = Get-SourceArguments $source
 
-  $packageArgs = "install $packageName -Outputdirectory `"$nugetLibPath`" $srcArgs -NonInteractive -NoCache"
+  $packageArgs = "install $packageName -OutputDirectory `"$nugetLibPath`" $srcArgs -NonInteractive -NoCache"
   if ($version -notlike '') {
     $packageArgs = $packageArgs + " -Version $version";
   }
@@ -20,7 +20,7 @@ param(
   $logFile = Join-Path $nugetChocolateyPath 'install.log'
   $errorLogFile = Join-Path $nugetChocolateyPath 'error.log'
 
-  $result = Execute-Process $nugetExe $packageArgs -returnOutput -returnErrors
+  $result = Execute-Process $nugetExe $packageArgs -returnOutput -returnErrors -createNoWindow
 
   $result.Output | Out-File $logFile
   $result.Errors | Out-File $errorLogFile
@@ -29,11 +29,11 @@ param(
     if ($line -ne $null) {Write-Debug $line;}
   }
 
-  if (-not $result.Errors.IsNullOrEmpty) {
-    Throw $errors
+  if (-not $result.Errors -eq $null) {
+    Throw ($result.Errors)
   }
 
-  if ($result.Output.IsNullOrEmpty -and $result.Errors.IsNullOrEmpty) {
+  if ($result.Output -eq $null -and $result.Errors -eq $null) {
     $noExecution = 'Execution of NuGet not detected. Please make sure you have .NET Framework 4.0 installed and are passing arguments to the install command.'
     #write-host  -BackgroundColor Red -ForegroundColor White
     Throw $noExecution
