@@ -137,7 +137,7 @@ Describe "Install-ChocolateyVsixPackage" {
 
     Install-ChocolateyVsixPackage "package name" "url"
     It "should remove spaces" {
-        Assert-MockCalled Install-Vsix -ParameterFilter {$installFile -eq "$env:temp\packagename.vsix"}
+        Assert-MockCalled Install-Vsix -ParameterFilter {$installFile -eq "$(Get-TempDir)\packagename.vsix"}
     }
   }
 }

@@ -61,7 +61,7 @@ param(
   try {
     $fileType = 'zip'
 
-    $chocTempDir = Join-Path $env:TEMP "chocolatey"
+    $chocTempDir = Get-ChocolateyTempDir
     $tempDir = Join-Path $chocTempDir "$packageName"
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir) | Out-Null}
     $file = Join-Path $tempDir "$($packageName)Install.$fileType"

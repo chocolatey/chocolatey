@@ -20,7 +20,7 @@
 #$url = "http://chocolatey.org/packages/chocolatey/DownloadPackage"
 $url = "http://chocolatey.org/api/v2/package/chocolatey/"
 #$url = "http://chocolatey.org/api/v1/package/chocolatey"
-$chocTempDir = Join-Path $env:TEMP "chocolatey"
+$chocTempDir = Get-ChocolateyTempDir
 $tempDir = Join-Path $chocTempDir "chocInstall"
 if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
 $file = Join-Path $tempDir "chocolatey.zip"

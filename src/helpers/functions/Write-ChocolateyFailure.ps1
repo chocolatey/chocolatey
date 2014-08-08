@@ -4,7 +4,7 @@ param(
   [string] $failureMessage
 )
 
-  $chocTempDir = Join-Path $env:TEMP "chocolatey"
+  $chocTempDir = Get-ChocolateyTempDir
   $tempDir = Join-Path $chocTempDir "$packageName"
   if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
   $successLog = Join-Path $tempDir 'success.log'

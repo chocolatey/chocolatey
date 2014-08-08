@@ -25,6 +25,38 @@ Describe "Get-ConfigValue" {
     }
   }
 
+  Context "when retrieving an unspecified value with a default" {
+    $oldProfile = $env:USERPROFILE
+    $env:USERPROFILE = Join-Path 'TestDrive:' 'userProfile'
+    Setup -File 'chocolatey\chocolateyInstall\chocolatey.config' @"
+<?xml version="1.0"?>
+<chocolatey />
+"@
+    $result = Get-ConfigValue 'checksumFiles' $false
+    $env:USERPROFILE = $oldProfile
+
+    It "should return the default value" {
+      $result  | should Be 'false'
+    }
+  }
+
+Context "when retrieving an configured value with a default" {
+    $oldProfile = $env:USERPROFILE
+    $env:USERPROFILE = Join-Path 'TestDrive:' 'userProfile'
+    Setup -File 'chocolatey\chocolateyInstall\chocolatey.config' @"
+<?xml version="1.0"?>
+<chocolatey>
+  <checksumFiles>true</checksumFiles>
+</chocolatey>
+"@
+    $result = Get-ConfigValue 'checksumFiles' $false
+    $env:USERPROFILE = $oldProfile
+
+    It "should return the configured value" {
+      $result  | should Be 'true'
+    }
+  }
+
   Context "when retrieving a list" {
     $oldProfile = $env:USERPROFILE
     $env:USERPROFILE = Join-Path 'TestDrive:' 'userProfile'

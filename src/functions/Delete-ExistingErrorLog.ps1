@@ -4,7 +4,7 @@ param(
 )
   Write-Debug "Running 'Delete-ExistingErrorLog' for $packageName";
 
-  $chocTempDir = Join-Path $env:TEMP "chocolatey"
+  $chocTempDir = Get-ChocolateyTempDir
   $tempDir = Join-Path $chocTempDir "$packageName"
   $failureLog = Join-Path $tempDir 'failure.log'
   Write-Debug "Looking for failure log at `'$failureLog`'"
