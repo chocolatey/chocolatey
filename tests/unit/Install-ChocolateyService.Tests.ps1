@@ -49,19 +49,7 @@ Describe "Install-ChocolateyService" {
 	  Write-Host $failureMessage
 	  }
     }
-  }
-
-  Context "When availablePort parameter is passed to this function and it is NOT in LISTENING state and available" {
-    Mock Write-ChocolateyFailure
-
-	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$availablePort"
-	
-	It "should return an error" {
-      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Port $availablePort is available." 
-	  Write-Host $failureMessage
-	  }
-    }
-  }  
+  } 
   
   Context "When no packageName parameter is passed to this function" {
     Mock Write-ChocolateyFailure
