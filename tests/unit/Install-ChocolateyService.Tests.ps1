@@ -8,7 +8,8 @@ $baseFunctions = "$base\src\helpers\functions"
 . "$baseFunctions\Get-ServiceStatus.ps1"
 . "$base\tests\unit\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
 
-$availablePort = "135"
+$availablePort = "99999"
+$unavailablePort = "135"
 $correctServiceName = "installServiceTest"
 $unavailableServiceName = "unavailableServiceName"
 $testDirectory = "C:\installChocolateyServiceTest"
@@ -38,18 +39,30 @@ Describe "Install-ChocolateyService" {
     }
   }  
  
-  Context "When availablePort parameter is passed to this function and it is in LISTENING state and not available" {
+  Context "When availablePort parameter is passed to this function and it is in LISTENING state and NOT available" {
     Mock Write-ChocolateyFailure
 
-	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$availablePort"
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$unavailablePort"
 	
 	It "should return an error" {
-      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$availablePort is in LISTENING state and not available." 
+      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "$unavailablePort is in LISTENING state and not available." 
 	  Write-Host $failureMessage
 	  }
     }
   }
 
+  Context "When availablePort parameter is passed to this function and it is NOT in LISTENING state and available" {
+    Mock Write-ChocolateyFailure
+
+	Install-ChocolateyServiceCorrectParameters.Tests -testDirectory "$testDirectory" -availablePort "$availablePort"
+	
+	It "should return an error" {
+      Assert-MockCalled Write-ChocolateyFailure -parameterFilter { $failureMessage  -eq "Port $availablePort is available." 
+	  Write-Host $failureMessage
+	  }
+    }
+  }  
+  
   Context "When no packageName parameter is passed to this function" {
     Mock Write-ChocolateyFailure
 	
