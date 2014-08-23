@@ -8,7 +8,6 @@ $baseFunctions = "$base\src\helpers\functions"
 . "$baseFunctions\Get-ServiceStatus.ps1"
 . "$base\tests\unit\Install-ChocolateyServiceCorrectParameters.Tests.ps1"
 
-$availablePort = "99999"
 $unavailablePort = "135"
 $correctServiceName = "installServiceTest"
 $unavailableServiceName = "unavailableServiceName"
