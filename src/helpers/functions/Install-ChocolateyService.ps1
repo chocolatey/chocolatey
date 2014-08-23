@@ -59,6 +59,8 @@ param(
     return
   }  
 
+  $listeningStatePort = Get-NetTCPConnection -State Listen | Where-Object {$_.LocalAddress -eq "0.0.0.0" -and $_.LocalPort -eq "$availablePort"}
+  
   try {
     Uninstall-ChocolateyService -serviceName "$serviceName"
   
@@ -71,14 +73,9 @@ param(
 	  return
     }
 
-    if($availablePort) {
-      $listeningStatePort = Get-NetTCPConnection -State Listen | Where-Object {$_.LocalAddress -eq "0.0.0.0" -and $_.LocalPort -eq "$availablePort"}
-      if (!$listeningStatePort) {
-        return $TRUE
-      } else {
-        Write-ChocolateyFailure "Install-ChocolateyService" "$availablePort is in LISTENING state and not available."
-        return
-      }
+    if($availablePort -and $listeningStatePort) {
+      Write-ChocolateyFailure "Install-ChocolateyService" "$availablePort is in LISTENING state and not available."
+      return
 	}	
 	
     if (Get-ServiceExistence -serviceName "$serviceName") {
