@@ -2,9 +2,10 @@ function Get-ConfigValue {
 param(
   [Parameter(Mandatory = $true)]
   [ValidateNotNullOrEmpty()]
-  [string] $configValue
+  [string] $configValue,
+  [string] $defaultValue
 )
-  Write-Debug "Running 'Get-ConfigValue' with configValue:`'$configValue`'";
+  Write-Debug "Running 'Get-ConfigValue' with configValue:`'$configValue`', defaultValue:`'$defaultValue`'";
 
   $returnValue = Get-UserConfigValue $configValue
   Write-Debug "After checking the user config the value of `'$configValue`' is `'$returnValue`'"
@@ -17,8 +18,13 @@ param(
   }
 
   if ($returnValue -eq $null) {
-      Write-Error "A configuration value for $configValue was not found"
+    if ($defaultValue -eq $null) {
+      Write-Error "A configuration value for $configValue was not found and no default was specified"
+    }
+
+    Write-Debug "Neither the user nor global config specified a value for `'$configValue`'. Using the default value: `'$defaultValue`'"
+    $returnValue = $defaultValue
   }
 
-  $returnValue
+  return $returnValue
 }

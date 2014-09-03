@@ -44,7 +44,7 @@ param(
       ##testing Start-Process -FilePath "powershell.exe" -ArgumentList " -noexit `"$ps1FullPath`"" -Verb "runas"  -Wait  #-PassThru -UseNewEnvironment ##-RedirectStandardError $errorLog -WindowStyle Normal
 
       #detect errors
-      $chocTempDir = Join-Path $env:TEMP "chocolatey"
+      $chocTempDir = Get-ChocolateyTempDir
       $tempDir = Join-Path $chocTempDir "$packageName"
       $failureLog = Join-Path $tempDir 'failure.log'
       if ([System.IO.File]::Exists($failureLog)) {

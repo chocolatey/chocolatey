@@ -70,7 +70,7 @@ param(
   try {
     Write-Debug "Running 'Install-ChocolateyPackage' for $packageName with url:`'$url`', args: `'$silentArgs`', fileType: `'$fileType`', url64bit: `'$url64bit`', checksum: `'$checksum`', checksumType: `'$checksumType`', checksum64: `'$checksum64`', checksumType64: `'$checksumType64`', validExitCodes: `'$validExitCodes`' ";
 
-    $chocTempDir = Join-Path $env:TEMP "chocolatey"
+    $chocTempDir = Get-ChocolateyTempDir
     $tempDir = Join-Path $chocTempDir "$packageName"
 
     if (![System.IO.Directory]::Exists($tempDir)) { [System.IO.Directory]::CreateDirectory($tempDir) | Out-Null }

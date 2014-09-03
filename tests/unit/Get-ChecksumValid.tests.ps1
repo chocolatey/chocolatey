@@ -7,7 +7,7 @@ function setup-testfile {
   $filePath = 'some\file.txt'
   Setup -File "$filePath" 'yo yo'
 
-  Join-Path (Join-Path $env:Temp 'pester') "$filePath"
+  Join-Path (Join-Path (Get-TempDir) 'pester') "$filePath"
 }
 
   Context "When a good checksum is provided" {

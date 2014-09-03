@@ -9,8 +9,8 @@ function ChocolateyInstall {
 
   Context "with installer arguments" {
     $cmd=(Get-Command ChocolateyInstall)
-    Mock Get-ChildItem { return @{Name="chocolateyinstall.ps1";FullName=$cmd} } -ParameterFilter { $path -eq "$env:temp\test" }
-    Run-ChocolateyPS1 "$env:temp\test" 'testPackage' 'install' 'real args'
+    Mock Get-ChildItem { return @{Name="chocolateyinstall.ps1";FullName=$cmd} } -ParameterFilter { $path -eq "$(Get-TempDir)\test" }
+    Run-ChocolateyPS1 "$(Get-TempDir)\test" 'testPackage' 'install' 'real args'
 
     It "should set chocolateyInstallArguments env var to Installer Arguments" {
       $global:installArgsInEnvironment  | should Be 'real args'
