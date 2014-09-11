@@ -3,10 +3,11 @@ param(
   [string] $operation='',
   [string] $name='' ,
   [string] $source='',
-  [string] $type='feed'
+  [string] $type=''
 )
 
   if ($operation -eq $null -or $operation -eq '') {$operation = 'list'}
+  if ($type -eq $null -or $type -eq '') {$operation = 'feed'}
 
   Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`', and type: `'$type`'";
 
@@ -54,6 +55,11 @@ param(
           $sources = $userConfig.selectSingleNode("//sources")
           $sources.RemoveChild($source) | Out-Null
 
+		  # utilize a helper to remove the cache for this repository as well
+		  if ($source.type -eq 'cache') {
+			Remove-Cache $source
+		  }
+		  
           Write-Host "Source $name removed."
           $true
         } else {
@@ -106,15 +112,19 @@ param(
 		$sources = Get-Sources
 
 		$sources | foreach {
-			if ($_.type -eq 'cache') {
-				# delegated in a different helper script
-				## download package.config from the source, write to cache directory of same name as source (%ChocolateyInstall%\cache)
-				## for each package in the config
-				### tack the source path on to the end of the source URL (doesn't need to be web, just a path that can provide resources)
-				### download the .nupkg file from that source and place in equivalent source path rooted in (%ChocolateyInstall%\cache\<source name>)
-				## additional tweaks in Get-Source-Arguments will fix up the cache pathing for NuGet to point to the cache instead of the web directory
+			$sourceToUpdate = $_
+			if ($sourceToUpdate.type -eq 'cache') {
+				try {
+					Update-Cache $sourceToUpdate
+				}
+				catch {
+					Write-Host "Source '$($sourceToUpdate.id)' unable to cache. Cache will be removed. Please debug for more information."
+					Remove-Cache $sourceToUpdate
+				}
 			}
 		}
+		
+		Write-Host "Sources updated."
 	}
 
     default { throw "Unrecognized sources operation '$operation'"}
