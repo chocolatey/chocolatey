@@ -17,6 +17,7 @@
   [alias("x86")][switch] $forceX86 = $false,
   [alias("params")][alias("parameters")][alias("pkgParams")][string]$packageParameters = '',
   [alias("q")][switch] $quiet = $false,
+  [string]$type='feed',
   [parameter(Position=1, ValueFromRemainingArguments=$true)]
   [string[]]$packageNames=@('')
 )
@@ -158,7 +159,7 @@ Append-Log
 
 Write-Debug "Arguments: `$command = '$command'|`$force=$force`
 |`$prerelease=$prerelease|`$packageNames='$packageNames'`
-|`$source='$source'`
+|`$source='$source'`|`$type='$type'`
 |`$version='$version'|`$allVersions=$allVersions`
 |`$overrideArguments=$overrideArgs|`$InstallArguments='$installArguments'`
 |`$localonly=$localonly|`$verbosity=$verbosity|`$debug=$debug|`$quiet=$quiet`
@@ -199,7 +200,7 @@ foreach ($packageName in $packageNames) {
       "pack"            { Chocolatey-Pack $packageName }
       "push"            { Chocolatey-Push $packageName $source }
       "help"            { Chocolatey-Help}
-      "sources"         { Chocolatey-Sources $packageName $name $source }
+      "sources"         { Chocolatey-Sources $packageName $name $source $type}
       default           {Write-Host "Please run chocolatey /? or chocolatey help - chocolatey v$chocVer";}
     }
   }

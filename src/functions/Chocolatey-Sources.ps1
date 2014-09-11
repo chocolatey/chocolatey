@@ -2,17 +2,17 @@
 param(
   [string] $operation='',
   [string] $name='' ,
-  [string] $source=''
+  [string] $source='',
+  [string] $type='feed'
 )
 
   if ($operation -eq $null -or $operation -eq '') {$operation = 'list'}
 
-  Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`'";
-
+  Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`', and type: `'$type`'";
 
   switch($operation)
   {
-    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.value};Label="URI"} }
+    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.type};Label="Type";width=25},@{Expression={$_.value};Label="URI"}} 
 
     "add" {
       if ($name -eq '' -or $name -eq $null -or $source -eq '' -or $source -eq $null ) { throw "Please provide -name NameOfSource -source LocationOfSource"}
@@ -29,6 +29,10 @@ param(
           $valueAttr = $userConfig.CreateAttribute("value")
           $valueAttr.Value = $source
           $newSource.SetAttributeNode($valueAttr) | Out-Null
+		  
+		  $typeAttr = $userConfig.CreateAttribute("type")
+          $typeAttr.Value = $type
+          $newSource.SetAttributeNode($typeAttr) | Out-Null
 
           $sources = $userConfig.selectSingleNode("//sources")
           $sources.AppendChild($newSource) | Out-Null
@@ -97,6 +101,21 @@ param(
         }
       }
     }
+	
+	"update" { 
+		$sources = Get-Sources
+
+		$sources | foreach {
+			if ($_.type -eq 'cache') {
+				# delegated in a different helper script
+				## download package.config from the source, write to cache directory of same name as source (%ChocolateyInstall%\cache)
+				## for each package in the config
+				### tack the source path on to the end of the source URL (doesn't need to be web, just a path that can provide resources)
+				### download the .nupkg file from that source and place in equivalent source path rooted in (%ChocolateyInstall%\cache\<source name>)
+				## additional tweaks in Get-Source-Arguments will fix up the cache pathing for NuGet to point to the cache instead of the web directory
+			}
+		}
+	}
 
     default { throw "Unrecognized sources operation '$operation'"}
 
