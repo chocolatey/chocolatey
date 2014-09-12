@@ -7,13 +7,12 @@ param(
 )
 
   if ($operation -eq $null -or $operation -eq '') {$operation = 'list'}
-  if ($type -eq $null -or $type -eq '') {$operation = 'feed'}
 
   Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`', and type: `'$type`'";
 
   switch($operation)
   {
-    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.type};Label="Type";width=25},@{Expression={$_.value};Label="URI"}} 
+    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.type};Label="Type (optional)";width=25},@{Expression={$_.value};Label="URI"}} 
 
     "add" {
       if ($name -eq '' -or $name -eq $null -or $source -eq '' -or $source -eq $null ) { throw "Please provide -name NameOfSource -source LocationOfSource"}
@@ -31,9 +30,11 @@ param(
           $valueAttr.Value = $source
           $newSource.SetAttributeNode($valueAttr) | Out-Null
 		  
-		  $typeAttr = $userConfig.CreateAttribute("type")
-          $typeAttr.Value = $type
-          $newSource.SetAttributeNode($typeAttr) | Out-Null
+		  if ($type -ne '' -and $type -ne $null) {
+		    $typeAttr = $userConfig.CreateAttribute("type")
+		    $typeAttr.Value = $type
+		    $newSource.SetAttributeNode($typeAttr) | Out-Null
+		  }
 
           $sources = $userConfig.selectSingleNode("//sources")
           $sources.AppendChild($newSource) | Out-Null
@@ -56,10 +57,8 @@ param(
           $sources.RemoveChild($source) | Out-Null
 
 		  # utilize a helper to remove the cache for this repository as well
-		  if ($source.type -eq 'cache') {
-			Remove-Cache $source
-		  }
-		  
+		  Remove-Cache $source
+		  		  
           Write-Host "Source $name removed."
           $true
         } else {
@@ -112,16 +111,7 @@ param(
 		$sources = Get-Sources
 
 		$sources | foreach {
-			$sourceToUpdate = $_
-			if ($sourceToUpdate.type -eq 'cache') {
-				try {
-					Update-Cache $sourceToUpdate
-				}
-				catch {
-					Write-Host "Source '$($sourceToUpdate.id)' unable to cache. Cache will be removed. Please debug for more information."
-					Remove-Cache $sourceToUpdate
-				}
-			}
+			Update-Cache $_
 		}
 		
 		Write-Host "Sources updated."

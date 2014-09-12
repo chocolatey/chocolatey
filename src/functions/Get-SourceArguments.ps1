@@ -15,11 +15,7 @@ param(
       $sources = Get-Sources
 
       $sources | foreach {
-		$srcUri = $_.value
-		if ($_.type -eq "cache") {
-			$srcUri = Get-CacheSourceArgument $_
-		}
-        
+        $srcUri = Get-CacheSourceArgument $_     
         $srcArgs += "$srcUri;"
       }
 

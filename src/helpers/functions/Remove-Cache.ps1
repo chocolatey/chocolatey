@@ -7,6 +7,9 @@ function Remove-Cache {
 param(
   [parameter(mandatory=$true)][object] $source
 )
+	# quick internal logic to exit early
+	if ($source.type -ne 'cache') { return }
+
 	# member variables - script: is script scope
 	$script:sCachePath = $env:ChocolateyInstall + "\cache\" + $source.id
 			

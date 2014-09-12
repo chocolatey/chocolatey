@@ -17,7 +17,7 @@
   [alias("x86")][switch] $forceX86 = $false,
   [alias("params")][alias("parameters")][alias("pkgParams")][string]$packageParameters = '',
   [alias("q")][switch] $quiet = $false,
-  [string]$type='feed',
+  [string]$type='',
   [parameter(Position=1, ValueFromRemainingArguments=$true)]
   [string[]]$packageNames=@('')
 )

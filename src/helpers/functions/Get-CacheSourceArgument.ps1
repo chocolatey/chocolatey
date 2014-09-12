@@ -7,10 +7,12 @@ function Get-CacheSourceArgument {
 param(
   [parameter(mandatory=$true)][object] $source
 )
-	# simple variables
-	$sCachePath = $env:ChocolateyInstall + "\cache\" + $source.id
-			
-	Write-Debug "Running 'Get-CacheSourceArgument' with cache:'$sCachePath'"
-	$sCachePath	
+	Write-Debug "Running 'Get-CacheSourceArgument' for '$($source.id)'"
+	if ($source.type -eq "cache") {
+		$env:ChocolateyInstall + "\cache\" + $source.id
+	}
+	else {
+		$source.value
+	}
 }
 
