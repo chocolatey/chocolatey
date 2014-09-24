@@ -47,7 +47,7 @@ param(
   		else
   		{
   		  $packageFolder = Join-Path $nugetLibPath "$($package).$($versions.found)"
-  		  Write-host "Uninstalling from folder $packageFolder"
+  		  Write-host "Re-installing from folder $packageFolder"
   		  Get-ChocolateyBins $packageFolder
   		  Run-ChocolateyPS1 $packageFolder $package
   		}
