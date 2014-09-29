@@ -81,7 +81,8 @@ param(
   }
 
   if($fileType -like 'msu') {
-
+    #Quote the path
+    $file = "`"$((resolve-path $file).Path)`""
     if ($overrideArguments) {
       $msuArgs = "$file $additionalInstallArgs"
     } else {
