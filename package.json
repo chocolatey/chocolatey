@@ -1,0 +1,30 @@
+{
+  "name": "chocolatey",
+  "version": "0.0.0",
+  "description": "just a quick grunt setup",
+  "main": "GruntFile.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "dependencies": {
+    "grunt-cli": "^0.1.13",
+    "grunt":"*",
+    "grunt-contrib-copy":"*",
+    "grunt-contrib-watch":"*"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bennyhat/chocolatey.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/bennyhat/chocolatey/issues"
+  },
+  "homepage": "https://github.com/bennyhat/chocolatey"
+}

@@ -37,6 +37,4 @@ Test.xml
 
 .DS_Store
 *.db
-GruntFile.js
-package.json
 node_modules/*
