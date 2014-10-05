@@ -38,4 +38,8 @@ Export-ModuleMember -Function `
 	Set-EnvironmentVariable,`
 	Update-Cache,`
 	Remove-Cache,`
-	Get-CacheSourceArgument
+	Get-CacheSourceArgument,`
+	Write-Folder,`
+	Remove-Folder,`
+	Remove-EnvironmentVariable,`
+	Uninstall-ChocolateyPath
