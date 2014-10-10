@@ -30,7 +30,7 @@ param(
   }
 
   $versionFound = ''
-  $versionsObj = New-Object –typename PSObject
+  $versionsObj = New-Object -typename PSObject
   foreach ($package in $packages.GetEnumerator()) {
     $packageName = $package.Name
     if ($packageName -eq '') { continue }
@@ -66,11 +66,11 @@ param(
       }
 
       $versions = @{name=$($package.Name); latest = $versionLatest; found = $versionFound; latestCompare = $versionLatestCompare; foundCompare = $versionFoundCompare; verMessage = $verMessage}
-      $versionsObj = New-Object –typename PSObject -Property $versions
+      $versionsObj = New-Object -typename PSObject -Property $versions
       $versionsObj
     } else {
       $versions = @{name=$($package.Name); found = $versionFound}
-      $versionsObj = New-Object –typename PSObject -Property $versions
+      $versionsObj = New-Object -typename PSObject -Property $versions
       $versionsObj
     }
   }

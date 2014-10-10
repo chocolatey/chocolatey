@@ -1,6 +1,6 @@
 # ==============================================================================
 #
-# Fervent Coder Copyright � 2011 - Released under the Apache 2.0 License
+# Fervent Coder Copyright (c) 2011 - Released under the Apache 2.0 License
 #
 # Copyright 2007-2008 The Apache Software Foundation.
 #
