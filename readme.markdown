@@ -10,7 +10,6 @@ Will give more information on the structuring of the actual website directory. F
 Add in the repository:
 ```sh
 > choco sources add -type cache http://benbrewer.me/chocolatey/repo
-
 ```
 
 Tell chocolatey to crawl it and cache the nupkg files from it locally:
@@ -20,5 +19,5 @@ Tell chocolatey to crawl it and cache the nupkg files from it locally:
 
 After that, installation of packages is the same as normal. Chocolatey will do a fix-up of the source to tell NuGet to point to the local cache whenever your search, list or install packages.
 
-# CREDITS
+## Credits
 See [docs/legal/CREDITS](https://github.com/chocolatey/chocolatey/raw/master/docs/legal/CREDITS) (just LEGAL/Credits in the zip folder)  
