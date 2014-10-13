@@ -1,16 +1,24 @@
-Chocolatey NuGet (like apt-get, but for Windows) [![](http://img.shields.io/gittip/Chocolatey.svg)](https://www.gittip.com/Chocolatey/) [![](http://img.shields.io/chocolatey/dt/chocolatey.svg)](http://chocolatey.org/packages/chocolatey) [![](http://img.shields.io/chocolatey/v/chocolatey.svg)](http://chocolatey.org/packages/chocolatey)  [![Build status](https://ci.appveyor.com/api/projects/status/jj9h1tobakhpbiwx/branch/master)](https://ci.appveyor.com/project/ferventcoder/chocolatey/branch/master)  [![](http://img.shields.io/teamcity/codebetter/bt802.svg)](http://teamcity.codebetter.com/viewType.html?buildTypeId=bt802)
-=======
-![Chocolatey Logo](https://github.com/chocolatey/chocolatey/raw/master/docs/logo/chocolateyicon.gif "Chocolatey")
+#Chocolatey - Cache Additions
 
-# LICENSE
-Apache 2.0 - see docs/legal (just LEGAL in the zip folder)
+This allows one to use a website directory structure as a repository source. The repository source is crawled and cached locally so that NuGet can reference it as a local file system.
 
-# INFO
-##Please see the [wiki](https://github.com/chocolatey/chocolatey/wiki)
+For more information on chocolatey, please see the original project, [chocolatey](https://github.com/chocolatey/chocolatey) and the [wiki](https://github.com/chocolatey/chocolatey/wiki)
 
-# SOURCE REQUIREMENTS
-* .NET Framework 4.0
-* PowerShell 2.0+
+##Quick Start
+Will give more information on the structuring of the actual website directory. For now, however, given a website directory of http://benbrewer.me/chocolately/repo
+
+Add in the repository:
+```sh
+> choco sources add -type cache http://benbrewer.me/chocolatey/repo
+
+```
+
+Tell chocolatey to crawl it and cache the nupkg files from it locally:
+```sh
+> choco sources update
+```
+
+After that, installation of packages is the same as normal. Chocolatey will do a fix-up of the source to tell NuGet to point to the local cache whenever your search, list or install packages.
 
 # CREDITS
 See [docs/legal/CREDITS](https://github.com/chocolatey/chocolatey/raw/master/docs/legal/CREDITS) (just LEGAL/Credits in the zip folder)  
