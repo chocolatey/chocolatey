@@ -9,7 +9,7 @@ Will give more information on the structuring of the actual website directory. F
 
 Add in the repository:
 ```sh
-> choco sources add -type cache http://benbrewer.me/chocolatey/repo
+> choco sources add -name test -type cache -source http://benbrewer.me/chocolatey/repo
 ```
 
 Tell chocolatey to crawl it and cache the nupkg files from it locally:
