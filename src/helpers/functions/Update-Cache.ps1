@@ -38,7 +38,7 @@ param(
 	}
 	catch {
 		Write-Host "Source '$($source.id)' unable to cache. Cache will be removed. Please debug for more information."
-		Remove-Cache $source
+		Remove-Cache $source $nugetPath
 	}	
 }
 function Update-Cache-Validate-Source-Type {
