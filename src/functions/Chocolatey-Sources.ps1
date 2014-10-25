@@ -57,7 +57,7 @@ param(
           $sources.RemoveChild($source) | Out-Null
 
 		  # utilize a helper to remove the cache for this repository as well
-		  Remove-Cache $source
+		  Remove-Cache $source $nugetPath
 		  		  
           Write-Host "Source $name removed."
           $true
@@ -111,7 +111,7 @@ param(
 		$sources = Get-Sources
 
 		$sources | foreach {
-			Update-Cache $_
+			Update-Cache $_ $nugetPath
 		}
 		
 		Write-Host "Sources updated."

@@ -7,7 +7,8 @@ for a private NuGet repository is not possible.
 
 function Update-Cache {
 param(
-  [parameter(mandatory=$true)][object] $source
+  [parameter(mandatory=$true)][object] $source,
+  [parameter(mandatory=$true)][object] $nugetPath
 )
 	# quick internal logic to exit early
 	if ($source.type -ne 'cache') { return }

@@ -5,11 +5,12 @@ NOTE: all failures throw and expect a reasonable amount of cleanup.
 #>
 function Get-CacheSourceArgument {
 param(
-  [parameter(mandatory=$true)][object] $source
+  [parameter(mandatory=$true)][object] $source,
+  [parameter(mandatory=$true)][object] $nugetPath
 )
 	Write-Debug "Running 'Get-CacheSourceArgument' for '$($source.id)'"
 	if ($source.type -eq "cache") {
-		$env:ChocolateyInstall + "\cache\" + $source.id
+		$nugetPath + "\cache\" + $source.id
 	}
 	else {
 		$source.value
