@@ -3,7 +3,6 @@
 $DebugPreference = "SilentlyContinue"
 if ($env:ChocolateyEnvironmentDebug -eq 'true') {$DebugPreference = "Continue";}
 
-
 # grab functions from files
 Resolve-Path $helpersPath\functions\*.ps1 |
     ? { -not ($_.ProviderPath.Contains(".Tests.")) } |
@@ -36,4 +35,11 @@ Export-ModuleMember -Function `
 	Update-SessionEnvironment,`
 	Get-EnvironmentVariableNames,`
 	Get-EnvironmentVariable,`
-	Set-EnvironmentVariable
+	Set-EnvironmentVariable,`
+	Update-Cache,`
+	Remove-Cache,`
+	Get-CacheSourceArgument,`
+	Write-Folder,`
+	Remove-Folder,`
+	Remove-EnvironmentVariable,`
+	Uninstall-ChocolateyPath

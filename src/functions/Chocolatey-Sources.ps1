@@ -2,17 +2,17 @@
 param(
   [string] $operation='',
   [string] $name='' ,
-  [string] $source=''
+  [string] $source='',
+  [string] $type=''
 )
 
   if ($operation -eq $null -or $operation -eq '') {$operation = 'list'}
 
-  Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`'";
-
+  Write-Debug "Running 'Chocolatey-Sources' operation `'$operation`' with source name:`'$name`', source location:`'$source`', and type: `'$type`'";
 
   switch($operation)
   {
-    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.value};Label="URI"} }
+    "list" { Get-Sources | format-table @{Expression={$_.id};Label="ID";width=25},@{Expression={$_.type};Label="Type (optional)";width=25},@{Expression={$_.value};Label="URI"}} 
 
     "add" {
       if ($name -eq '' -or $name -eq $null -or $source -eq '' -or $source -eq $null ) { throw "Please provide -name NameOfSource -source LocationOfSource"}
@@ -29,6 +29,12 @@ param(
           $valueAttr = $userConfig.CreateAttribute("value")
           $valueAttr.Value = $source
           $newSource.SetAttributeNode($valueAttr) | Out-Null
+		  
+		  if ($type -ne '' -and $type -ne $null) {
+		    $typeAttr = $userConfig.CreateAttribute("type")
+		    $typeAttr.Value = $type
+		    $newSource.SetAttributeNode($typeAttr) | Out-Null
+		  }
 
           $sources = $userConfig.selectSingleNode("//sources")
           $sources.AppendChild($newSource) | Out-Null
@@ -50,6 +56,9 @@ param(
           $sources = $userConfig.selectSingleNode("//sources")
           $sources.RemoveChild($source) | Out-Null
 
+		  # utilize a helper to remove the cache for this repository as well
+		  Remove-Cache $source $nugetPath
+		  		  
           Write-Host "Source $name removed."
           $true
         } else {
@@ -97,6 +106,16 @@ param(
         }
       }
     }
+	
+	"update" { 
+		$sources = Get-Sources
+
+		$sources | foreach {
+			Update-Cache $_ $nugetPath
+		}
+		
+		Write-Host "Sources updated."
+	}
 
     default { throw "Unrecognized sources operation '$operation'"}
 

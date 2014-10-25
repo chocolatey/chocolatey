@@ -24,6 +24,12 @@ param(
     $proxy.credentials = $creds
     $request.proxy = $proxy
   }
+  
+  # quick fix-up for embedded credentials in the URL
+  $bCredentialsExist = $url -match "(?://)(\w+):(\w+)(?:@)"
+  if ($bCredentialsExist) {  
+    $request.Credentials = New-Object System.Net.NetworkCredential($matches[1],$matches[2])
+  }
 
   $request.Accept = '*/*'
   $request.AllowAutoRedirect = $true

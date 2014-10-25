@@ -15,7 +15,7 @@ param(
       $sources = Get-Sources
 
       $sources | foreach {
-        $srcUri = $_.value
+        $srcUri = Get-CacheSourceArgument $_ $nugetPath  
         $srcArgs += "$srcUri;"
       }
 
