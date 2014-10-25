@@ -5,7 +5,12 @@ This allows one to use a website directory structure as a repository source. The
 For more information on chocolatey, please see the original project, [chocolatey](https://github.com/chocolatey/chocolatey) and the [wiki](https://github.com/chocolatey/chocolatey/wiki)
 
 ##Quick Start
-Will give more information on the structuring of the actual website directory. For now, however, given a website directory of http://benbrewer.me/chocolately/repo
+Will give more information on the structuring of the actual website directory. For now, however, given a website directory of http://files.lambyhat.com/repository
+
+Get a copy of a temporarily modified chocolatey:
+```sh
+> Powershell "iex ((new-object net.webclient).DownloadString('http://files.lambyhat.com/chocolatey/installChocolatey.ps1'))"
+```
 
 Add in the repository:
 ```sh
