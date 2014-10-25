@@ -7,7 +7,7 @@ For more information on chocolatey, please see the original project, [chocolatey
 ##Quick Start
 Will give more information on the structuring of the actual website directory. For now, however, given a website directory of http://files.lambyhat.com/repository
 
-Get a copy of a temporarily modified chocolatey:
+Get a copy of a temporarily modified chocolatey (you may have to issue a ```Set-ExecutionPolicy Unrestricted``` first):
 ```sh
 > Powershell "iex ((new-object net.webclient).DownloadString('http://files.lambyhat.com/chocolatey/installChocolatey.ps1'))"
 ```
