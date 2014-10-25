@@ -1,6 +1,6 @@
 <#
 Author: Ben Brewer <ben@benbrewer.me>
-Description: A cache initializer that downloads .nupkg files from a web repository and places them in a
+Description: A cache initializer that downloads .nupkg files from a web directory and places them in a
 local cache for reference by NuGet. This is to help get around situations where installing a RESTful API
 for a private NuGet repository is not possible.
 #>
@@ -14,7 +14,7 @@ param(
 	try {			
 		# member variables - script: is script scope
 		$script:sSourcePath = $source.value
-		$script:sDestinationPath = $env:ChocolateyInstall + "\cache\" + $source.id
+		$script:sDestinationPath = $nugetPath + "\cache\" + $source.id
 		$script:sPackageConfigFile = ""
 		
 		Write-Debug "Running 'Update-Cache' with source:'$sSourcePath' and cache:'$script:sDestinationPath'"
