@@ -9,7 +9,7 @@ Will give more information on the structuring of the actual website directory. F
 
 Get a copy of a temporarily modified chocolatey:
 ```sh
-Powershell "iex ((new-object net.webclient).DownloadString('http://files.lambyhat.com/chocolatey/installChocolatey.ps1'))"
+> Powershell "iex ((new-object net.webclient).DownloadString('http://files.lambyhat.com/chocolatey/installChocolatey.ps1'))"
 ```
 
 Add in the repository:
