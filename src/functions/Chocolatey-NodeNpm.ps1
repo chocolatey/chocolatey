@@ -4,7 +4,7 @@ param(
   [string] $version ='',
   [string] $installerArguments =''
 )
-  Write-Debug "Running 'Chocolatey-RubyGem' for $packageName with version:`'$version`', installerArguments: `'$installerArguments`'";
+  Write-Debug "Running 'Chocolatey-NodeNpm' for $packageName with version:`'$version`', installerArguments: `'$installerArguments`'";
 
   Chocolatey-InstallIfMissing 'nodejs'
 
