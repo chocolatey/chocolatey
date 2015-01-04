@@ -68,64 +68,27 @@ param(
     }
 
     Write-Debug "Executing command [`"$nugetExe`" $params]"
-    $global:packageList = @{}
+    $packageList = @{}
 
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = New-Object System.Diagnostics.ProcessStartInfo($nugetExe, $params)
+    $result = Execute-Process $nugetExe $params -returnOutput:$returnOutput -returnErrors:$returnOutput
 
-    # Redirecting output slows things down a bit. In
-    # the interest of performance, only use redirection
-    # if we are returning a PS-Object at the end
-    if ($returnOutput) {
-      $LogAction = {
-        # we know this is one line of data otherwise we would need to split lines
-        foreach ($line in $EventArgs.Data) {
-         #Write-Host "$line" #this line really slows things down
-          if (!$line.IsNullOrEmpty) {
+    if ($result.output -ne $null) {
+        $lines = ($result.output -split "\r\n")
+        foreach ($line in $lines) {
             $package = $line.Split(" ")
-            $global:packageList.Add("$($package[0])","$($package[1])")
-          }
+            $packageList.Add("$($package[0])","$($package[1])")
         }
-      }
-      $writeOutput = $LogAction
-      $writeError = {
-        foreach ($line in $EventArgs.Data) {
-          if (!$line.IsNullOrEmpty) {
+    }
+
+    if ($result.errors -ne $null) {
+        $lines = ($result.errors -split "\r\n")
+        foreach ($line in $lines) {
             # do not stop execution, but pass the output back to the user.
             Write-Host "[ERROR] $line" -ForegroundColor $ErrorColor -BackgroundColor Black
-          }
         }
-      }
-
-      $process.EnableRaisingEvents = $true
-      Register-ObjectEvent  -InputObject $process -SourceIdentifier "LogOutput_ChocolateyList" -EventName OutputDataReceived -Action $writeOutput | Out-Null
-      Register-ObjectEvent -InputObject $process -SourceIdentifier "LogErrors_ChocolateyList" -EventName ErrorDataReceived -Action  $writeError | Out-Null
-
-      $process.StartInfo.RedirectStandardOutput = $true
-      $process.StartInfo.RedirectStandardError = $true
     }
-    $process.StartInfo.UseShellExecute = $false
 
-    $process.Start() | Out-Null
-    if ($process.StartInfo.RedirectStandardOutput) { $process.BeginOutputReadLine() }
-    if ($process.StartInfo.RedirectStandardError) { $process.BeginErrorReadLine() }
-    $process.WaitForExit()
-
-    if ($returnOutput) {
-      # For some reason this forces the jobs to finish and waits for
-      # them to do so. Without this it never finishes.
-      Unregister-Event -SourceIdentifier "LogOutput_ChocolateyList"
-      #Wait-Job "LogOutput_ChocolateyList" -Timeout 10
-      #Remove-Job "LogOutput_ChocolateyList" #-Force
-
-      Unregister-Event -SourceIdentifier "LogErrors_ChocolateyList"
-      #Wait-Job "LogErrors_ChocolateyList" -Timeout 10
-      #Remove-Job "LogErrors_ChocolateyList"
-    }
-    $exitCode = $process.ExitCode
-    $process.Dispose()
-
-    Write-Debug "Command [`"$nugetExe`" $params] exited with `'$exitCode`'."
+    Write-Debug "Command [`"$nugetExe`" $params] exited with `'$($result.ExitCode)`'."
 
     if ($returnOutput) {
       # not a bug

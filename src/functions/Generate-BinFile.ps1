@@ -23,19 +23,8 @@ param(
     $ShimGenArgs +=" -gui"
   }
 
-  Write-Debug "Calling $ShimGen $ShimGenArgs"
-
   if (Test-Path ("$ShimGen")) {
-    #Start-Process "$ShimGen" -ArgumentList "$ShimGenArgs" -Wait -WindowStyle Hidden
-    $process = New-Object System.Diagnostics.Process
-    $process.StartInfo = new-object System.Diagnostics.ProcessStartInfo($ShimGen, $ShimGenArgs)
-    $process.StartInfo.RedirectStandardOutput = $true
-    $process.StartInfo.RedirectStandardError = $true
-    $process.StartInfo.UseShellExecute = $false
-    $process.StartInfo.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-
-    $process.Start() | Out-Null
-    $process.WaitForExit()
+    Execute-Process $ShimGen $ShimGenArgs -windowStyleHidden
   }
 
   if (Test-Path ($packageShimFileName)) {
