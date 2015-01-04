@@ -2,14 +2,15 @@
 param(
   [string] $packageName,
   [string] $source = '',
-  [string] $version = ''
-)
+  [string] $version = '',
+  [string] $nugetInstallPath=$nugetLibPath)
+
   Write-Debug "Running 'Run-NuGet' for $packageName with source: `'$source`', version:`'$version`'";
   Write-Debug "___ NuGet ____"
 
   $srcArgs = Get-SourceArguments $source
 
-  $packageArgs = "install $packageName -OutputDirectory `"$nugetLibPath`" $srcArgs -NonInteractive -NoCache"
+  $packageArgs = "install $packageName -OutputDirectory `"$nugetInstallPath`" $srcArgs -NonInteractive -NoCache"
   if ($version -notlike '') {
     $packageArgs = $packageArgs + " -Version $version";
   }

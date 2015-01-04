@@ -50,6 +50,7 @@ $nugetPath = (Split-Path -Parent $nugetChocolateyPath)
 $nugetExePath = Join-Path $nuGetPath 'bin'
 $nugetLibPath = Join-Path $nuGetPath 'lib'
 $badLibPath = Join-Path $nuGetPath 'lib-bad'
+$runLibPath = Join-Path $nuGetPath 'lib-run'
 $extensionsPath = Join-Path $nugetPath 'extensions'
 $chocInstallVariableName = "ChocolateyInstall"
 $nugetExe = Join-Path $nugetChocolateyPath 'nuget.exe'

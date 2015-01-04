@@ -22,7 +22,17 @@ param(
     $srcArgs = "(from $source)"
   }
 
+$isRunPackage = $packageName.ToLower().EndsWith('.run');
 Write-Host "Chocolatey (v$chocVer) is installing `'$packageName`' and dependencies. By installing you accept the license for `'$packageName`' and each dependency you are installing." -ForegroundColor $RunNote -BackgroundColor Black
+
+if($isRunPackage) {
+  $nugetInstallPath = Join-Path $nuGetPath 'lib-run'
+  Write-Host ".run Package detected. Will run package install script, and remove package afterwards." -ForegroundColor $Note -BackgroundColor Black
+}
+else {
+  $nugetInstallPath=$nugetLibPath;
+}
+
 Write-Debug "Installing packages to `"$nugetLibPath`"."
 
   $nugetOutput = (Run-NuGet $packageName $source $version).Split("`n")
@@ -77,20 +87,31 @@ Write-Debug "Installing packages to `"$nugetLibPath`"."
             Write-Host "$installedPackageName v$installedPackageVersion" -ForegroundColor $Note -BackgroundColor Black
 
             if ([System.IO.Directory]::Exists($packageFolder)) {
-              try {
-                Delete-ExistingErrorLog $installedPackageName
-                Run-ChocolateyPS1 $packageFolder $installedPackageName "install" $installerArguments
-                Get-ChocolateyBins $packageFolder
-                if ($installedPackageName.ToLower().EndsWith('.extension')) {
-                  Chocolatey-InstallExtension $packageFolder $installedPackageName
+              if($installedPackageName.ToLower().EndsWith('.run')) {              
+                try {             
+                  Delete-ExistingErrorLog $installedPackageName
+                  Run-ChocolateyPS1 $packageFolder $installedPackageName "install" $installerArguments               
+                } catch {                
+                  Write-Error "Package `'$installedPackageName v$installedPackageVersion`' did not run successfully: $($_.Exception.Message)"                
+                  $chocolateyErrored = $true                  
                 }
-
-              } catch {
-                Move-BadInstall $installedPackageName $installedPackageVersion $packageFolder
-                Write-Error "Package `'$installedPackageName v$installedPackageVersion`' did not install successfully: $($_.Exception.Message)"
-                if ($badPackages -ne '') { $badPackages += ', '}
-                $badPackages += "$packageName"
-                $chocolateyErrored = $true
+                Remove-Item $packageFolder -force -recurse
+              }
+              else {
+                try {
+                  Delete-ExistingErrorLog $installedPackageName
+                  Run-ChocolateyPS1 $packageFolder $installedPackageName "install" $installerArguments
+                  Get-ChocolateyBins $packageFolder
+                  if ($installedPackageName.ToLower().EndsWith('.extension')) {
+                    Chocolatey-InstallExtension $packageFolder $installedPackageName
+                  }
+                } catch {
+                  Move-BadInstall $installedPackageName $installedPackageVersion $packageFolder
+                  Write-Error "Package `'$installedPackageName v$installedPackageVersion`' did not install successfully: $($_.Exception.Message)"
+                  if ($badPackages -ne '') { $badPackages += ', '}
+                  $badPackages += "$packageName"
+                  $chocolateyErrored = $true
+                }
               }
             }
           }
