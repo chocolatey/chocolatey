@@ -90,7 +90,7 @@ Write-Debug "Installing packages to `"$nugetLibPath`"."
                 Write-Error "Package `'$installedPackageName v$installedPackageVersion`' did not install successfully: $($_.Exception.Message)"
                 if ($badPackages -ne '') { $badPackages += ', '}
                 $badPackages += "$packageName"
-                $chocolateyErrored = $true
+                $global:chocolateyErrored = $true
               }
             }
           }
@@ -100,5 +100,11 @@ Write-Debug "Installing packages to `"$nugetLibPath`"."
   }
 
   Update-SessionEnvironment
-  Write-Host "Finished installing `'$packageName`' and dependencies - if errors not shown in console, none detected. Check log for errors if unsure." -ForegroundColor $RunNote -BackgroundColor Black
+
+  if ($global:chocolateyErrored) {
+    Write-Host "Failed to install `'$packageName`' or dependencies"
+  }
+  else {
+    Write-Host "Finished installing `'$packageName`' and dependencies - if errors not shown in console, none detected. Check log for errors if unsure." -ForegroundColor $RunNote -BackgroundColor Black
+  }
 }
