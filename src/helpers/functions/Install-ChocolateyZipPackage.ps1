@@ -56,18 +56,47 @@ param(
   [string] $checksum64 = '',
   [string] $checksumType64 = ''
 )
+  if(!$packageName) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing PackageName input parameter."
+    return
+  }
+  
+  if(!$url) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing Url input parameter."
+    return
+  }
+
+  if(!$unzipLocation) {
+    Write-ChocolateyFailure "Install-ChocolateyZipPackage" "Missing UnzipLocation input parameter."
+    return
+  }
+
   Write-Debug "Running 'Install-ChocolateyZipPackage' for $packageName with url:`'$url`', unzipLocation: `'$unzipLocation`', url64bit: `'$url64bit`', specificFolder: `'$specificFolder`', checksum: `'$checksum`', checksumType: `'$checksumType`', checksum64: `'$checksum64`', checksumType64: `'$checksumType64`' ";
 
-  try {
+  try {  
     $fileType = 'zip'
-
     $chocTempDir = Join-Path $env:TEMP "chocolatey"
     $tempDir = Join-Path $chocTempDir "$packageName"
     if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir) | Out-Null}
-    $file = Join-Path $tempDir "$($packageName)Install.$fileType"
+    $file = "$($packageName)Install.$fileType"
+	$filePath = Join-Path $tempDir "$file"
+	
+    Get-ChocolateyWebFile $packageName $filePath $url $url64bit -checkSum $checkSum -checksumType $checksumType -checkSum64 $checkSum64 -checksumType64 $checksumType64
+	
+	if (($url -match 'tar.gz') -or ($url64bit -match 'tar.gz')){ 
+	  Invoke-Expression -Command:"cinst Cygwin"
+	
+	  $unzipLocationTar = "$unzipLocation" -replace "\\","/"
+      Set-Location $tempDir
 
-    Get-ChocolateyWebFile $packageName $file $url $url64bit -checkSum $checkSum -checksumType $checksumType -checkSum64 $checkSum64 -checksumType64 $checksumType64
-    Get-ChocolateyUnzip "$file" $unzipLocation $specificFolder $packageName
+      if (!(Test-Path $unzipLocationTar)) {
+        new-item $unzipLocationTar -itemtype directory
+      }
+      
+	  Invoke-Expression -Command:"tar xvzf $file -C $unzipLocationTar"
+	} else {
+	  Get-ChocolateyUnzip "$filePath" $unzipLocation $specificFolder $packageName
+    }
 
     Write-ChocolateySuccess $packageName
   } catch {
@@ -75,3 +104,5 @@ param(
     throw
   }
 }
+
+set-alias Install-ChocolateyArchivePackage Install-ChocolateyZipPackage
