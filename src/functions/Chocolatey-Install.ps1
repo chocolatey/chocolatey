@@ -20,6 +20,27 @@ param(
     "cygwin" { Chocolatey-Cygwin $packageName $installerArguments; }
     "python" { Chocolatey-Python $packageName $version $installerArguments; }
     "ruby" { Chocolatey-RubyGem $packageName $version $installerArguments; }
-    default {Chocolatey-Nuget $packageName $source $version $installerArguments;}
+    default 
+    {
+      if ([string]::IsNullOrEmpty($version))
+      {
+	$nversions = Chocolatey-List -selector "$packageName" -returnOutput
+	foreach ($nversion in $nversions.GetEnumerator()) 
+	{
+	  if ($nversion -ne $null)
+	  {
+	    Chocolatey-NuGet $nversion.name $source $nversion.value $installerArguments;
+	  } 
+	  else
+	  {
+	    Write-Debug "$($nversion.name) - package not found!"
+	  }
+	}
+      }
+      else
+      {
+      	Chocolatey-Nuget $packageName $source $version $installerArguments;
+      }
+    }
   }
 }

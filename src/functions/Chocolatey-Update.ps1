@@ -14,7 +14,7 @@ param(
   foreach ($version in $versions) {
     if ($version -ne $null -and (($version.'foundCompare' -lt $version.'latestCompare') -or ($force -and $versions.'foundCompare' -eq $versions.'latestCompare'))) {
         Write-Host "Updating $($version.name) from $($version.found) to $($version.latest)"
-        Chocolatey-NuGet $version.name $source
+        Chocolatey-NuGet $version.name $source $version.latest
         $updated = $true
     } else {
       Write-Debug "$($version.name) - you have either a newer version or the same version already available"
