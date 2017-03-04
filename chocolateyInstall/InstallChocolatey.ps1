@@ -1,3 +1,6 @@
+Param(
+  [string]$chocolateyVersion = ""
+)
 # ==============================================================================
 #
 # Fervent Coder Copyright 2011 - Present - Released under the Apache 2.0 License
@@ -17,9 +20,8 @@
 # ==============================================================================
 
 # variables
-#$url = "https://chocolatey.org/packages/chocolatey/DownloadPackage"
-$url = "https://chocolatey.org/api/v2/package/chocolatey/"
-#$url = "https://chocolatey.org/api/v1/package/chocolatey"
+if (![string]::IsNullOrEmpty($chocolateyVersion)){Write-Host "Downloading specific version of Chocolatey: " + $chocolateyVersion}
+$url = "https://chocolatey.org/api/v2/package/chocolatey/" + $chocolateyVersion
 $chocTempDir = Join-Path $env:TEMP "chocolatey"
 $tempDir = Join-Path $chocTempDir "chocInstall"
 if (![System.IO.Directory]::Exists($tempDir)) {[System.IO.Directory]::CreateDirectory($tempDir)}
@@ -44,16 +46,16 @@ $chocInstallPS1 = Join-Path $toolsFolder "chocolateyInstall.ps1"
 
 & $chocInstallPS1
 
-write-host 'Ensuring chocolatey commands are on the path'
+Write-Host "Ensuring chocolatey commands are on the path"
 $chocInstallVariableName = "ChocolateyInstall"
 $nuGetPath = [Environment]::GetEnvironmentVariable($chocInstallVariableName, [System.EnvironmentVariableTarget]::User)
-$nugetExePath = 'C:\ProgramData\Chocolatey\bin'
+$nugetExePath = "C:\ProgramData\Chocolatey\bin"
 if ($nuGetPath -ne $null) {
-  $nugetExePath = Join-Path $nuGetPath 'bin'
+  $nugetExePath = Join-Path $nuGetPath "bin"
 }
 
 if ($($env:Path).ToLower().Contains($($nugetExePath).ToLower()) -eq $false) {
-  $env:Path = [Environment]::GetEnvironmentVariable('Path',[System.EnvironmentVariableTarget]::Machine);
+  $env:Path = [Environment]::GetEnvironmentVariable("Path",[System.EnvironmentVariableTarget]::Machine);
 }
 Write-Host "THIS IS DEPRECATED. Please use the install from https://chocolatey.org/install.ps1"
 # update chocolatey to the latest version
