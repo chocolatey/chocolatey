@@ -22,7 +22,8 @@ param(
   if (!$client.Proxy.IsBypassed($url))
   {
     $creds = [Net.CredentialCache]::DefaultCredentials
-    if ($creds -eq $null) {
+    if ($creds -eq $null -or
+        $creds.UserName -eq "" -or $creds.Password -eq "") {
       Write-Debug "Default credentials were null. Attempting backup method"
       $cred = Get-Credential
       $creds = $cred.GetNetworkCredential();
