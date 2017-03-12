@@ -1,3 +1,6 @@
+param(
+    [switch] $defaultProxyAuth # Supply default credentials to proxy servers
+)
 # ==============================================================================
 #
 # Fervent Coder Copyright 2011 - Present - Released under the Apache 2.0 License
@@ -28,6 +31,10 @@ $file = Join-Path $tempDir "chocolatey.zip"
 # download the package
 Write-Host "Downloading $url to $file"
 $downloader = new-object System.Net.WebClient
+if($defaultProxyAuth){
+    # Make the install work when on corporate networks etc...
+    $downloader.Proxy.Credentials = [System.Net.CredentialCache]::DefaultCredentials;
+}
 $downloader.DownloadFile($url, $file)
 
 # unzip the package
