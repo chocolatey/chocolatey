@@ -20,6 +20,7 @@ param(
     "cygwin" { Chocolatey-Cygwin $packageName $installerArguments; }
     "python" { Chocolatey-Python $packageName $version $installerArguments; }
     "ruby" { Chocolatey-RubyGem $packageName $version $installerArguments; }
+    "node" {Chocolatey-NodeNpm $packageName $version $installerArguments; }
     default {Chocolatey-Nuget $packageName $source $version $installerArguments;}
   }
 }
